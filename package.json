@@ -1,0 +1,18 @@
+{
+  "name": "character-sheets",
+  "license": "UNLICENSED",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ dan13ram/character-sheets",
+    "create-local": "graph create --node http://localhost:8020/ dan13ram/character-sheets",
+    "remove-local": "graph remove --node http://localhost:8020/ dan13ram/character-sheets",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 dan13ram/character-sheets",
+    "test": "graph test"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.56.0",
+    "@graphprotocol/graph-ts": "0.30.0"
+  },
+  "devDependencies": { "matchstick-as": "0.5.0" }
+}

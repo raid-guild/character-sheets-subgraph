@@ -1,0 +1,8 @@
+{
+  "sepolia": {
+    "CharacterSheetsFactory": {
+      "address": "0xb271d3501CfEd30616Ebf83bbcE693b2eE93CE25",
+      "startBlock": 4161678
+    }
+  }
+}

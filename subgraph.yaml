@@ -1,0 +1,51 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: CharacterSheetsFactory
+    network: sepolia
+    source:
+      address: "0xb271d3501CfEd30616Ebf83bbcE693b2eE93CE25"
+      abi: CharacterSheetsFactory
+      startBlock: 4161678
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - CharacterSheetsCreated
+        - CharacterSheetsUpdated
+        - ClassesCreated
+        - ClassesImplementationUpdated
+        - ERC6551AccountImplementationUpdated
+        - ExperienceAndItemsCreated
+        - ExperienceUpdated
+        - Initialized
+        - OwnershipTransferred
+        - RegistryUpdated
+      abis:
+        - name: CharacterSheetsFactory
+          file: ./abis/CharacterSheetsFactory.json
+      eventHandlers:
+        - event: CharacterSheetsCreated(address,address)
+          handler: handleCharacterSheetsCreated
+        - event: CharacterSheetsUpdated(address)
+          handler: handleCharacterSheetsUpdated
+        - event: ClassesCreated(address,address)
+          handler: handleClassesCreated
+        - event: ClassesImplementationUpdated(address)
+          handler: handleClassesImplementationUpdated
+        - event: ERC6551AccountImplementationUpdated(address)
+          handler: handleERC6551AccountImplementationUpdated
+        - event: ExperienceAndItemsCreated(address,address)
+          handler: handleExperienceAndItemsCreated
+        - event: ExperienceUpdated(address)
+          handler: handleExperienceUpdated
+        - event: Initialized(uint64)
+          handler: handleInitialized
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: RegistryUpdated(address)
+          handler: handleRegistryUpdated
+      file: ./src/character-sheets-factory.ts
