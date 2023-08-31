@@ -3,6 +3,21 @@
     "CharacterSheetsFactory": {
       "address": "0xb271d3501CfEd30616Ebf83bbcE693b2eE93CE25",
       "startBlock": 4161678
+    },
+    "CharacterSheetsImplementation": {
+      "address": "0x17c6e273709532585c4F5EA322d90B15f4D66D29"
+    },
+    "Erc6551Registry": {
+      "address": "0x02101dfB77FDE026414827Fdc604ddAF224F0921"
+    },
+    "CharacterAccount": {
+      "address": "0x0f6fbE92d5131299c0d80aC508192F226b0AD140"
+    },
+    "ExperienceAndItemsImplementation": {
+      "address": "0x024417e9Caea813F83CA9BF29938802B18005755"
+    },
+    "ClassesImplementation": {
+      "address": "0x5c0b6d591b00ABdFbb0B6d432D92e552f206a482"
     }
   }
 }
