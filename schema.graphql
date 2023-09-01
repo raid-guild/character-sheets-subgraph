@@ -1,3 +1,53 @@
+type Global @entity {
+  id: ID!
+  gameFactory: Bytes!
+  characterSheetsImpl: Bytes!
+  classesImpl: Bytes!
+  itemsImpl: Bytes!
+  erc6551Registry: Bytes!
+}
+
+type Game @entity {
+  id: ID!
+  dao: Bytes!
+  uri: String!
+  masters: [Bytes!]!
+  characters: [Character!]! @derivedFrom(field: "game")
+  classes: [Class!]! @derivedFrom(field: "game")
+  items: [Item!]! @derivedFrom(field: "game")
+  createdBy: Bytes!
+  createdAt: BigInt!
+}
+
+type Character @entity {
+  id: ID!
+  characterId: BigInt!
+  uri: String!
+  jailed: Boolean!
+  game: Game!
+  experience: BigInt!
+  items: [Item!]!
+  classes: [Class!]!
+  equippedItems: [Item!]!
+  equippedClasses: [Class!]!
+}
+
+type Class @entity {
+  id: ID!
+  classId: BigInt!
+  uri: String!
+  name: String!
+  holders: [Character!]! @derivedFrom(field: "classes")
+}
+
+type Item @entity {
+  id: ID!
+  itemId: BigInt!
+  uri: String!
+  name: String!
+  holders: [Character!]! @derivedFrom(field: "items")
+}
+
 type CharacterSheetsCreated @entity(immutable: true) {
   id: Bytes!
   newCharacterSheets: Bytes! # address
