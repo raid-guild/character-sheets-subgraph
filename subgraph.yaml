@@ -6,7 +6,7 @@ dataSources:
     name: CharacterSheetsFactory
     network: sepolia
     source:
-      address: "0xb271d3501CfEd30616Ebf83bbcE693b2eE93CE25"
+      address: "0x7CeCF0a7B6e764d7B8849bD47E1A92c1806B89aC"
       abi: CharacterSheetsFactory
       startBlock: 4161678
     mapping:
@@ -14,32 +14,26 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - CharacterSheetsCreated
-        - CharacterSheetsUpdated
-        - ClassesCreated
-        - ClassesImplementationUpdated
-        - ERC6551AccountImplementationUpdated
-        - ExperienceAndItemsCreated
-        - ExperienceUpdated
-        - Initialized
-        - OwnershipTransferred
-        - RegistryUpdated
+        - Global
+        - Game
       abis:
         - name: CharacterSheetsFactory
           file: ./abis/CharacterSheetsFactory.json
+        - name: CharacterSheetsImplementation
+          file: ./abis/CharacterSheetsImplementation.json
+        - name: ClassesImplementation
+          file: ./abis/ClassesImplementation.json
+        - name: ExperienceAndItemsImplementation
+          file: ./abis/ExperienceAndItemsImplementation.json
       eventHandlers:
-        - event: CharacterSheetsCreated(address,address)
+        - event: CharacterSheetsCreated(address,address,address,address)
           handler: handleCharacterSheetsCreated
         - event: CharacterSheetsUpdated(address)
           handler: handleCharacterSheetsUpdated
-        - event: ClassesCreated(address,address)
-          handler: handleClassesCreated
         - event: ClassesImplementationUpdated(address)
           handler: handleClassesImplementationUpdated
         - event: ERC6551AccountImplementationUpdated(address)
           handler: handleERC6551AccountImplementationUpdated
-        - event: ExperienceAndItemsCreated(address,address)
-          handler: handleExperienceAndItemsCreated
         - event: ExperienceUpdated(address)
           handler: handleExperienceUpdated
         - event: Initialized(uint64)
@@ -49,67 +43,45 @@ dataSources:
         - event: RegistryUpdated(address)
           handler: handleRegistryUpdated
       file: ./src/character-sheets-factory.ts
+templates:
   - kind: ethereum
     name: CharacterSheetsImplementation
     network: sepolia
     source:
-      address: "0x17c6e273709532585c4F5EA322d90B15f4D66D29"
       abi: CharacterSheetsImplementation
-      startBlock: 4161672
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - Approval
-        - ApprovalForAll
-        - BatchMetadataUpdate
-        - CharacterNameUpdated
-        - ClassEquipped
-        - CharacterSheetsImplementationExperienceUpdated
-        - CharacterSheetsImplementationInitialized
-        - ItemEquipped
-        - MetadataUpdate
-        - NewCharacter
-        - NewPlayer
-        - PlayerJailed
-        - PlayerRemoved
-        - RoleAdminChanged
-        - RoleGranted
-        - RoleRevoked
-        - Transfer
+        - Game
+        - Character
+        - Item
+        - Class
       abis:
+        - name: CharacterSheetsFactory
+          file: ./abis/CharacterSheetsFactory.json
         - name: CharacterSheetsImplementation
           file: ./abis/CharacterSheetsImplementation.json
+        - name: ClassesImplementation
+          file: ./abis/ClassesImplementation.json
+        - name: ExperienceAndItemsImplementation
+          file: ./abis/ExperienceAndItemsImplementation.json
       eventHandlers:
-        - event: Approval(indexed address,indexed address,indexed uint256)
-          handler: handleApproval
-        - event: ApprovalForAll(indexed address,indexed address,bool)
-          handler: handleApprovalForAll
-        - event: BatchMetadataUpdate(uint256,uint256)
-          handler: handleBatchMetadataUpdate
         - event: CharacterNameUpdated(string,string)
           handler: handleCharacterNameUpdated
         - event: ClassEquipped(uint256,uint256)
           handler: handleClassEquipped
         - event: ExperienceUpdated(address)
           handler: handleExperienceUpdated
-        - event: Initialized(uint8)
-          handler: handleInitialized
         - event: ItemEquipped(uint256,uint256)
           handler: handleItemEquipped
         - event: MetadataUpdate(uint256)
           handler: handleMetadataUpdate
-        - event: NewCharacter(uint256,address)
-          handler: handleNewCharacter
-        - event: NewPlayer(uint256,address)
-          handler: handleNewPlayer
-        - event: PlayerJailed(address,bool)
-          handler: handlePlayerJailed
+        - event: NewCharacterSheetRolled(address,address,uint256)
+          handler: handleNewCharacterSheetRolled
         - event: PlayerRemoved(uint256)
           handler: handlePlayerRemoved
-        - event: RoleAdminChanged(indexed bytes32,indexed bytes32,indexed bytes32)
-          handler: handleRoleAdminChanged
         - event: RoleGranted(indexed bytes32,indexed address,indexed address)
           handler: handleRoleGranted
         - event: RoleRevoked(indexed bytes32,indexed address,indexed address)
@@ -118,73 +90,28 @@ dataSources:
           handler: handleTransfer
       file: ./src/character-sheets-implementation.ts
   - kind: ethereum
-    name: Erc6551Registry
-    network: sepolia
-    source:
-      address: "0x02101dfB77FDE026414827Fdc604ddAF224F0921"
-      abi: Erc6551Registry
-      startBlock: 4161672
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - AccountCreated
-      abis:
-        - name: Erc6551Registry
-          file: ./abis/Erc6551Registry.json
-      eventHandlers:
-        - event: AccountCreated(address,address,uint256,address,uint256,uint256)
-          handler: handleAccountCreated
-      file: ./src/erc-6551-registry.ts
-  - kind: ethereum
-    name: CharacterAccount
-    network: sepolia
-    source:
-      address: "0x0f6fbE92d5131299c0d80aC508192F226b0AD140"
-      abi: CharacterAccount
-      startBlock: 4161670
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - TransactionExecuted
-      abis:
-        - name: CharacterAccount
-          file: ./abis/CharacterAccount.json
-      eventHandlers:
-        - event: TransactionExecuted(indexed address,indexed uint256,bytes)
-          handler: handleTransactionExecuted
-      file: ./src/character-account.ts
-  - kind: ethereum
     name: ExperienceAndItemsImplementation
     network: sepolia
     source:
-      address: "0x024417e9Caea813F83CA9BF29938802B18005755"
       abi: ExperienceAndItemsImplementation
-      startBlock: 4161674
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - ExperienceAndItemsImplementationApprovalForAll
-        - ExperienceAndItemsImplementationInitialized
-        - ItemTransfered
-        - ItemUpdated
-        - NewItemTypeCreated
-        - TransferBatch
-        - TransferSingle
-        - URI
+        - Character
+        - Item
+        - Class
       abis:
+        - name: CharacterSheetsFactory
+          file: ./abis/CharacterSheetsFactory.json
+        - name: CharacterSheetsImplementation
+          file: ./abis/CharacterSheetsImplementation.json
+        - name: ClassesImplementation
+          file: ./abis/ClassesImplementation.json
         - name: ExperienceAndItemsImplementation
           file: ./abis/ExperienceAndItemsImplementation.json
       eventHandlers:
-        - event: ApprovalForAll(indexed address,indexed address,bool)
-          handler: handleApprovalForAll
-        - event: Initialized(uint8)
-          handler: handleInitialized
         - event: ItemTransfered(address,uint256)
           handler: handleItemTransfered
         - event: ItemUpdated(uint256)
@@ -202,31 +129,27 @@ dataSources:
     name: ClassesImplementation
     network: sepolia
     source:
-      address: "0x5c0b6d591b00ABdFbb0B6d432D92e552f206a482"
       abi: ClassesImplementation
-      startBlock: 4161676
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - ClassesImplementationApprovalForAll
-        - ClassAssigned
-        - ClassesImplementationInitialized
-        - NewClassCreated
-        - ClassesImplementationTransferBatch
-        - ClassesImplementationTransferSingle
-        - ClassesImplementationURI
+        - Character
+        - Item
+        - Class
       abis:
+        - name: CharacterSheetsFactory
+          file: ./abis/CharacterSheetsFactory.json
+        - name: CharacterSheetsImplementation
+          file: ./abis/CharacterSheetsImplementation.json
         - name: ClassesImplementation
           file: ./abis/ClassesImplementation.json
+        - name: ExperienceAndItemsImplementation
+          file: ./abis/ExperienceAndItemsImplementation.json
       eventHandlers:
-        - event: ApprovalForAll(indexed address,indexed address,bool)
-          handler: handleApprovalForAll
         - event: ClassAssigned(address,uint256,uint256)
           handler: handleClassAssigned
-        - event: Initialized(uint8)
-          handler: handleInitialized
         - event: NewClassCreated(uint256,string)
           handler: handleNewClassCreated
         - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])

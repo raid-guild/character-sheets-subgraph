@@ -5,12 +5,18 @@ type Global @entity {
   classesImpl: Bytes!
   itemsImpl: Bytes!
   erc6551Registry: Bytes!
+  erc6551AccountImpl: Bytes!
+  owner: Bytes!
 }
 
 type Game @entity {
   id: ID!
+  characterSheetsAddress: Bytes!
+  classesAddress: Bytes!
+  itemsAddress: Bytes!
   dao: Bytes!
   uri: String!
+  owners: [Bytes!]!
   masters: [Bytes!]!
   characters: [Character!]! @derivedFrom(field: "game")
   classes: [Class!]! @derivedFrom(field: "game")
@@ -21,433 +27,35 @@ type Game @entity {
 
 type Character @entity {
   id: ID!
+  name: String!
   characterId: BigInt!
+  account: Bytes!
+  owner: Bytes!
   uri: String!
-  jailed: Boolean!
   game: Game!
   experience: BigInt!
-  items: [Item!]!
-  classes: [Class!]!
+  items: [Item!]! @derivedFrom(field: "holders")
+  classes: [Class!]! @derivedFrom(field: "holders")
   equippedItems: [Item!]!
   equippedClasses: [Class!]!
+  createdAt: BigInt!
+  createdBy: Bytes!
 }
 
 type Class @entity {
   id: ID!
+  game: Game!
   classId: BigInt!
   uri: String!
   name: String!
-  holders: [Character!]! @derivedFrom(field: "classes")
+  holders: [Character!]!
 }
 
 type Item @entity {
   id: ID!
+  game: Game!
   itemId: BigInt!
   uri: String!
   name: String!
-  holders: [Character!]! @derivedFrom(field: "items")
-}
-
-type CharacterSheetsCreated @entity(immutable: true) {
-  id: Bytes!
-  newCharacterSheets: Bytes! # address
-  creator: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type CharacterSheetsUpdated @entity(immutable: true) {
-  id: Bytes!
-  newCharacterSheets: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ClassesCreated @entity(immutable: true) {
-  id: Bytes!
-  newClasses: Bytes! # address
-  creator: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ClassesImplementationUpdated @entity(immutable: true) {
-  id: Bytes!
-  newClasses: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ERC6551AccountImplementationUpdated @entity(immutable: true) {
-  id: Bytes!
-  newImplementation: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ExperienceAndItemsCreated @entity(immutable: true) {
-  id: Bytes!
-  newExp: Bytes! # address
-  creator: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ExperienceUpdated @entity(immutable: true) {
-  id: Bytes!
-  newExperience: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type Initialized @entity(immutable: true) {
-  id: Bytes!
-  version: BigInt! # uint64
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type OwnershipTransferred @entity(immutable: true) {
-  id: Bytes!
-  previousOwner: Bytes! # address
-  newOwner: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type RegistryUpdated @entity(immutable: true) {
-  id: Bytes!
-  newRegistry: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-type Approval @entity(immutable: true) {
-  id: Bytes!
-  owner: Bytes! # address
-  approved: Bytes! # address
-  tokenId: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ApprovalForAll @entity(immutable: true) {
-  id: Bytes!
-  owner: Bytes! # address
-  operator: Bytes! # address
-  approved: Boolean! # bool
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type BatchMetadataUpdate @entity(immutable: true) {
-  id: Bytes!
-  _fromTokenId: BigInt! # uint256
-  _toTokenId: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type CharacterNameUpdated @entity(immutable: true) {
-  id: Bytes!
-  oldName: String! # string
-  newName: String! # string
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ClassEquipped @entity(immutable: true) {
-  id: Bytes!
-  characterId: BigInt! # uint256
-  classId: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type CharacterSheetsImplementationExperienceUpdated @entity(immutable: true) {
-  id: Bytes!
-  exp: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type CharacterSheetsImplementationInitialized @entity(immutable: true) {
-  id: Bytes!
-  version: Int! # uint8
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ItemEquipped @entity(immutable: true) {
-  id: Bytes!
-  characterId: BigInt! # uint256
-  itemTokenId: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type MetadataUpdate @entity(immutable: true) {
-  id: Bytes!
-  _tokenId: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type NewCharacter @entity(immutable: true) {
-  id: Bytes!
-  tokenId: BigInt! # uint256
-  tba: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type NewPlayer @entity(immutable: true) {
-  id: Bytes!
-  tokenId: BigInt! # uint256
-  memberAddress: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type PlayerJailed @entity(immutable: true) {
-  id: Bytes!
-  playerAddress: Bytes! # address
-  thrownInJail: Boolean! # bool
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type PlayerRemoved @entity(immutable: true) {
-  id: Bytes!
-  tokenId: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type RoleAdminChanged @entity(immutable: true) {
-  id: Bytes!
-  role: Bytes! # bytes32
-  previousAdminRole: Bytes! # bytes32
-  newAdminRole: Bytes! # bytes32
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type RoleGranted @entity(immutable: true) {
-  id: Bytes!
-  role: Bytes! # bytes32
-  account: Bytes! # address
-  sender: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type RoleRevoked @entity(immutable: true) {
-  id: Bytes!
-  role: Bytes! # bytes32
-  account: Bytes! # address
-  sender: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type Transfer @entity(immutable: true) {
-  id: Bytes!
-  from: Bytes! # address
-  to: Bytes! # address
-  tokenId: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-type AccountCreated @entity(immutable: true) {
-  id: Bytes!
-  account: Bytes! # address
-  implementation: Bytes! # address
-  chainId: BigInt! # uint256
-  tokenContract: Bytes! # address
-  tokenId: BigInt! # uint256
-  salt: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-type TransactionExecuted @entity(immutable: true) {
-  id: Bytes!
-  target: Bytes! # address
-  value: BigInt! # uint256
-  data: Bytes! # bytes
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-type ExperienceAndItemsImplementationApprovalForAll @entity(immutable: true) {
-  id: Bytes!
-  owner: Bytes! # address
-  operator: Bytes! # address
-  approved: Boolean! # bool
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ExperienceAndItemsImplementationInitialized @entity(immutable: true) {
-  id: Bytes!
-  version: Int! # uint8
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ItemTransfered @entity(immutable: true) {
-  id: Bytes!
-  itemTransferedTo: Bytes! # address
-  itemId: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ItemUpdated @entity(immutable: true) {
-  id: Bytes!
-  itemId: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type NewItemTypeCreated @entity(immutable: true) {
-  id: Bytes!
-  itemId: BigInt! # uint256
-  name: String! # string
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type TransferBatch @entity(immutable: true) {
-  id: Bytes!
-  operator: Bytes! # address
-  from: Bytes! # address
-  to: Bytes! # address
-  ids: [BigInt!]! # uint256[]
-  amounts: [BigInt!]! # uint256[]
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type TransferSingle @entity(immutable: true) {
-  id: Bytes!
-  operator: Bytes! # address
-  from: Bytes! # address
-  to: Bytes! # address
-  ExperienceAndItemsImplementation_id: BigInt! # uint256
-  amount: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type URI @entity(immutable: true) {
-  id: Bytes!
-  value: String! # string
-  ExperienceAndItemsImplementation_id: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-type ClassesImplementationApprovalForAll @entity(immutable: true) {
-  id: Bytes!
-  owner: Bytes! # address
-  operator: Bytes! # address
-  approved: Boolean! # bool
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ClassAssigned @entity(immutable: true) {
-  id: Bytes!
-  classAssignedTo: Bytes! # address
-  erc1155TokenId: BigInt! # uint256
-  classId: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ClassesImplementationInitialized @entity(immutable: true) {
-  id: Bytes!
-  version: Int! # uint8
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type NewClassCreated @entity(immutable: true) {
-  id: Bytes!
-  erc1155TokenId: BigInt! # uint256
-  name: String! # string
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ClassesImplementationTransferBatch @entity(immutable: true) {
-  id: Bytes!
-  operator: Bytes! # address
-  from: Bytes! # address
-  to: Bytes! # address
-  ids: [BigInt!]! # uint256[]
-  amounts: [BigInt!]! # uint256[]
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ClassesImplementationTransferSingle @entity(immutable: true) {
-  id: Bytes!
-  operator: Bytes! # address
-  from: Bytes! # address
-  to: Bytes! # address
-  ClassesImplementation_id: BigInt! # uint256
-  amount: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ClassesImplementationURI @entity(immutable: true) {
-  id: Bytes!
-  value: String! # string
-  ClassesImplementation_id: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+  holders: [Character!]!
 }
