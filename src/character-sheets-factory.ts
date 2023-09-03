@@ -41,9 +41,14 @@ export function handleCharacterSheetsCreated(
 
   let contract = CharacterSheetsContract.bind(event.params.characterSheets);
 
-  let result = contract.try_dao();
-  if (!result.reverted) {
-    entity.dao = result.value;
+  let daoResult = contract.try_dao();
+  if (!daoResult.reverted) {
+    entity.dao = daoResult.value;
+  }
+
+  let uriResult = contract.try_baseTokenURI();
+  if (!uriResult.reverted) {
+    entity.uri = uriResult.value;
   }
 
   entity.save();
