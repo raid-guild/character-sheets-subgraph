@@ -1,13 +1,14 @@
 import {
   ClassAssigned as ClassAssignedEvent,
+  ClassRevoked as ClassRevokedEvent,
   NewClassCreated as NewClassCreatedEvent,
   TransferBatch as TransferBatchEvent,
   TransferSingle as TransferSingleEvent,
   URI as URIEvent,
   ClassesImplementation,
 } from "../generated/templates/ClassesImplementation/ClassesImplementation";
-import { Class } from "../generated/schema";
-import { CharacterSheetsImplementation } from "../generated/templates/CharacterSheetsImplementation/CharacterSheetsImplementation";
+import { Class, HeldClass } from "../generated/schema";
+import { BigInt, store } from "@graphprotocol/graph-ts";
 
 export function handleClassAssigned(event: ClassAssignedEvent): void {
   let contract = ClassesImplementation.bind(event.address);
@@ -15,32 +16,54 @@ export function handleClassAssigned(event: ClassAssignedEvent): void {
   let classId = game
     .toHex()
     .concat("-class-")
-    .concat(event.params.erc1155TokenId.toString());
+    .concat(event.params.classId.toString());
 
-  let entity = Class.load(classId);
-  if (entity == null) {
-    return;
-  }
-
-  let gameContract = CharacterSheetsImplementation.bind(game);
-  let result = gameContract.try_getCharacterIdByNftAddress(
-    event.params.classAssignedTo
-  );
-
-  if (result.reverted) {
-    return;
-  }
   let characterId = game
     .toHex()
     .concat("-character-")
-    .concat(result.value.toString());
+    .concat(event.params.characterId.toString());
 
-  entity.holders.push(characterId);
+  let heldClassId = game
+    .toHex()
+    .concat("-class-")
+    .concat(
+      event.params.classId
+        .toString()
+        .concat("-held-by-")
+        .concat(event.params.characterId.toString())
+    );
+
+  let entity = HeldClass.load(heldClassId);
+  if (entity == null) {
+    entity = new HeldClass(heldClassId);
+    entity.amount = BigInt.fromI32(0);
+  }
+
+  entity.classEntity = classId;
+  entity.character = characterId;
+  let amount = entity.amount;
+  amount = amount.plus(BigInt.fromI32(1));
+  entity.amount = amount;
 
   entity.save();
 }
 
-// TODO add handler for ClassUnassigned, but it's not in the ABI
+export function handleClassRevoked(event: ClassRevokedEvent): void {
+  let contract = ClassesImplementation.bind(event.address);
+  let game = contract.characterSheets();
+
+  let heldClassId = game
+    .toHex()
+    .concat("-class-")
+    .concat(
+      event.params.classId
+        .toString()
+        .concat("-held-by-")
+        .concat(event.params.characterId.toString())
+    );
+
+  store.remove("HeldClass", heldClassId);
+}
 
 export function handleNewClassCreated(event: NewClassCreatedEvent): void {
   let contract = ClassesImplementation.bind(event.address);
@@ -60,8 +83,6 @@ export function handleNewClassCreated(event: NewClassCreatedEvent): void {
   if (!result.reverted) {
     entity.uri = result.value;
   }
-
-  entity.holders = new Array<string>();
 
   entity.save();
 }

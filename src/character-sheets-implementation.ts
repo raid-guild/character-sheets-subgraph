@@ -1,8 +1,10 @@
 import {
   CharacterNameUpdated as CharacterNameUpdatedEvent,
   ClassEquipped as ClassEquippedEvent,
-  ExperienceUpdated as ExperienceUpdatedEvent,
   ItemEquipped as ItemEquippedEvent,
+  ClassUnequipped as ClassUnequippedEvent,
+  ItemUnequipped as ItemUnequippedEvent,
+  ExperienceUpdated as ExperienceUpdatedEvent,
   MetadataUpdate as MetadataUpdateEvent,
   NewCharacterSheetRolled as NewCharacterSheetRolledEvent,
   PlayerRemoved as PlayerRemovedEvent,
@@ -11,36 +13,124 @@ import {
   Transfer as TransferEvent,
   CharacterSheetsImplementation,
 } from "../generated/templates/CharacterSheetsImplementation/CharacterSheetsImplementation";
-import { Character, Game } from "../generated/schema";
+import {
+  Character,
+  EquippedClass,
+  EquippedItem,
+  Game,
+} from "../generated/schema";
 import { BigInt, store } from "@graphprotocol/graph-ts";
 
 export function handleCharacterNameUpdated(
   event: CharacterNameUpdatedEvent
 ): void {
-  // TODO: implement, needs update to ABI
+  let characterId = event.address
+    .toHex()
+    .concat("-character-")
+    .concat(event.params.tokenId.toHex());
+
+  let character = Character.load(characterId);
+
+  if (character == null) {
+    return;
+  }
+
+  character.name = event.params.newName;
+  character.save();
 }
 
 export function handleClassEquipped(event: ClassEquippedEvent): void {
-  let entity = Character.load(
-    event.address
-      .toHex()
-      .concat("-character-")
-      .concat(event.params.characterId.toHex())
-  );
-  if (entity == null) {
-    return;
-  }
+  let characterId = event.address
+    .toHex()
+    .concat("-character-")
+    .concat(event.params.characterId.toHex());
 
   let classId = event.address
     .toHex()
     .concat("-class-")
     .concat(event.params.classId.toHex());
 
-  let equippedClasses = entity.equippedClasses;
-  equippedClasses.push(classId);
-  entity.equippedClasses = equippedClasses;
+  let heldClassId = event.address
+    .toHex()
+    .concat("-class-")
+    .concat(event.params.classId.toString())
+    .concat("-held-by-")
+    .concat(event.params.characterId.toString());
 
-  entity.save();
+  let equippedClassId = event.address
+    .toHex()
+    .concat("-class-")
+    .concat(event.params.classId.toString())
+    .concat("-equipped-by-")
+    .concat(event.params.characterId.toString());
+
+  let equippedClass = EquippedClass.load(equippedClassId);
+  if (equippedClass == null) {
+    equippedClass = new EquippedClass(equippedClassId);
+  }
+
+  equippedClass.character = characterId;
+  equippedClass.classEntity = classId;
+  equippedClass.heldClass = heldClassId;
+  equippedClass.save();
+}
+
+export function handleClassUnequipped(event: ClassUnequippedEvent): void {
+  let equippedClassId = event.address
+    .toHex()
+    .concat("-class-")
+    .concat(event.params.classId.toString())
+    .concat("-equipped-by-")
+    .concat(event.params.characterId.toString());
+
+  store.remove("EquippedClass", equippedClassId);
+}
+
+export function handleItemEquipped(event: ItemEquippedEvent): void {
+  let characterId = event.address
+    .toHex()
+    .concat("-character-")
+    .concat(event.params.characterId.toHex());
+
+  let itemId = event.address
+    .toHex()
+    .concat("-item-")
+    .concat(event.params.itemTokenId.toHex());
+
+  let heldItemId = event.address
+    .toHex()
+    .concat("-item-")
+    .concat(event.params.itemTokenId.toString())
+    .concat("-held-by-")
+    .concat(event.params.characterId.toString());
+
+  let equippedItemId = event.address
+    .toHex()
+    .concat("-item-")
+    .concat(event.params.itemTokenId.toString())
+    .concat("-equipped-by-")
+    .concat(event.params.characterId.toString());
+
+  let equippedItem = EquippedItem.load(equippedItemId);
+  if (equippedItem == null) {
+    equippedItem = new EquippedItem(equippedItemId);
+  }
+
+  equippedItem.character = characterId;
+  equippedItem.item = itemId;
+  equippedItem.heldItem = heldItemId;
+  equippedItem.save();
+}
+
+export function handleItemUnequipped(event: ItemUnequippedEvent): void {
+  let equippedItemId = event.address
+    .toHex()
+    .concat("-item-")
+    .concat(event.params.itemTokenId.toString())
+    .concat("-equipped-by-")
+    .concat(event.params.characterId.toString());
+
+  store.remove("EquippedItem", equippedItemId);
 }
 
 export function handleExperienceUpdated(event: ExperienceUpdatedEvent): void {
@@ -49,29 +139,6 @@ export function handleExperienceUpdated(event: ExperienceUpdatedEvent): void {
     return;
   }
   entity.itemsAddress = event.params.exp;
-  entity.save();
-}
-
-export function handleItemEquipped(event: ItemEquippedEvent): void {
-  let entity = Character.load(
-    event.address
-      .toHex()
-      .concat("-character-")
-      .concat(event.params.characterId.toHex())
-  );
-  if (entity == null) {
-    return;
-  }
-
-  let itemId = event.address
-    .toHex()
-    .concat("-item-")
-    .concat(event.params.itemTokenId.toHex());
-
-  let equippedItems = entity.equippedItems;
-  equippedItems.push(itemId);
-  entity.equippedItems = equippedItems;
-
   entity.save();
 }
 
@@ -87,9 +154,9 @@ export function handleMetadataUpdate(event: MetadataUpdateEvent): void {
   }
 
   let contract = CharacterSheetsImplementation.bind(event.address);
-  let result0 = contract.try_tokenURI(event.params._tokenId);
-  if (!result0.reverted) {
-    entity.uri = result0.value;
+  let result = contract.try_tokenURI(event.params._tokenId);
+  if (!result.reverted) {
+    entity.uri = result.value;
   }
 
   entity.save();
@@ -112,22 +179,20 @@ export function handleNewCharacterSheetRolled(
   entity.uri = ""; // TODO: get uri from event
   entity.game = event.address.toHex();
   entity.experience = BigInt.fromI32(0);
-  entity.equippedItems = new Array<string>();
-  entity.equippedClasses = new Array<string>();
   entity.createdAt = event.block.timestamp;
   entity.createdBy = event.transaction.from;
 
   let contract = CharacterSheetsImplementation.bind(event.address);
-  let result0 = contract.try_tokenURI(event.params.tokenId);
-  if (!result0.reverted) {
-    entity.uri = result0.value;
+  let uriResult = contract.try_tokenURI(event.params.tokenId);
+  if (!uriResult.reverted) {
+    entity.uri = uriResult.value;
   }
 
-  let result1 = contract.try_getCharacterSheetByCharacterId(
+  let characterResult = contract.try_getCharacterSheetByCharacterId(
     event.params.tokenId
   );
-  if (!result1.reverted) {
-    entity.name = result1.value.name;
+  if (!characterResult.reverted) {
+    entity.name = characterResult.value.name;
   }
 
   entity.save();

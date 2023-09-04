@@ -34,10 +34,10 @@ type Character @entity {
   uri: String!
   game: Game!
   experience: BigInt!
-  items: [Item!]! @derivedFrom(field: "holders")
-  classes: [Class!]! @derivedFrom(field: "holders")
-  equippedItems: [Item!]!
-  equippedClasses: [Class!]!
+  items: [HeldItem!]! @derivedFrom(field: "character")
+  classes: [HeldClass!]! @derivedFrom(field: "character")
+  equippedItems: [EquippedItem!]! @derivedFrom(field: "character")
+  equippedClasses: [EquippedClass!]! @derivedFrom(field: "character")
   createdAt: BigInt!
   createdBy: Bytes!
 }
@@ -48,7 +48,8 @@ type Class @entity {
   classId: BigInt!
   uri: String!
   name: String!
-  holders: [Character!]!
+  holders: [HeldClass!]! @derivedFrom(field: "classEntity")
+  equipment: [EquippedClass!]! @derivedFrom(field: "classEntity")
 }
 
 type Item @entity {
@@ -57,5 +58,50 @@ type Item @entity {
   itemId: BigInt!
   uri: String!
   name: String!
-  holders: [Character!]!
+  merkleRoot: Bytes!
+  classRequirements: [ClassRequirement!]! @derivedFrom(field: "item")
+  itemRequirements: [ItemRequirement!]! @derivedFrom(field: "item")
+  holders: [HeldItem!]! @derivedFrom(field: "item")
+  equipment: [EquippedItem!]! @derivedFrom(field: "item")
+}
+
+type ClassRequirement @entity {
+  id: ID!
+  item: Item!
+  requiredClass: Class!
+}
+
+type ItemRequirement @entity {
+  id: ID!
+  item: Item!
+  requiredItem: Item!
+  requiredAmount: BigInt!
+}
+
+type HeldItem @entity {
+  id: ID!
+  character: Character!
+  item: Item!
+  amount: BigInt!
+}
+
+type HeldClass @entity {
+  id: ID!
+  character: Character!
+  classEntity: Class!
+  amount: BigInt!
+}
+
+type EquippedItem @entity {
+  id: ID!
+  character: Character!
+  item: Item!
+  heldItem: HeldItem!
+}
+
+type EquippedClass @entity {
+  id: ID!
+  character: Character!
+  classEntity: Class!
+  heldClass: HeldClass!
 }

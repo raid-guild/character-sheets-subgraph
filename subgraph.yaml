@@ -6,9 +6,9 @@ dataSources:
     name: CharacterSheetsFactory
     network: sepolia
     source:
-      address: "0x7CeCF0a7B6e764d7B8849bD47E1A92c1806B89aC"
+      address: "0x4D503cB90254B278987fF0E5770aeDCBe2BCd552"
       abi: CharacterSheetsFactory
-      startBlock: 4161678
+      startBlock: 4223950
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -68,14 +68,18 @@ templates:
         - name: ExperienceAndItemsImplementation
           file: ./abis/ExperienceAndItemsImplementation.json
       eventHandlers:
-        - event: CharacterNameUpdated(string,string)
+        - event: CharacterNameUpdated(uint256,string,string)
           handler: handleCharacterNameUpdated
         - event: ClassEquipped(uint256,uint256)
           handler: handleClassEquipped
-        - event: ExperienceUpdated(address)
-          handler: handleExperienceUpdated
         - event: ItemEquipped(uint256,uint256)
           handler: handleItemEquipped
+        - event: ClassUnequipped(uint256,uint256)
+          handler: handleClassUnequipped
+        - event: ItemUnequipped(uint256,uint256)
+          handler: handleItemUnequipped
+        - event: ExperienceUpdated(address)
+          handler: handleExperienceUpdated
         - event: MetadataUpdate(uint256)
           handler: handleMetadataUpdate
         - event: NewCharacterSheetRolled(address,address,uint256)
@@ -112,10 +116,10 @@ templates:
         - name: ExperienceAndItemsImplementation
           file: ./abis/ExperienceAndItemsImplementation.json
       eventHandlers:
-        - event: ItemTransfered(address,uint256)
+        - event: ItemTransfered(address,uint256,uint256)
           handler: handleItemTransfered
-        - event: ItemUpdated(uint256)
-          handler: handleItemUpdated
+        - event: ItemClaimableUpdated(uint256,bytes32)
+          handler: handleItemClaimableUpdated
         - event: NewItemTypeCreated(uint256,string)
           handler: handleNewItemTypeCreated
         - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
@@ -148,8 +152,10 @@ templates:
         - name: ExperienceAndItemsImplementation
           file: ./abis/ExperienceAndItemsImplementation.json
       eventHandlers:
-        - event: ClassAssigned(address,uint256,uint256)
+        - event: ClassAssigned(uint256,uint256)
           handler: handleClassAssigned
+        - event: ClassRevoked(uint256,uint256)
+          handler: handleClassRevoked
         - event: NewClassCreated(uint256,string)
           handler: handleNewClassCreated
         - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])

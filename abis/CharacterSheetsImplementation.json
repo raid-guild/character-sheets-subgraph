@@ -123,6 +123,12 @@
     "inputs": [
       {
         "indexed": false,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
         "internalType": "string",
         "name": "oldName",
         "type": "string"
@@ -154,6 +160,25 @@
       }
     ],
     "name": "ClassEquipped",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "characterId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "classId",
+        "type": "uint256"
+      }
+    ],
+    "name": "ClassUnequipped",
     "type": "event"
   },
   {
@@ -199,6 +224,25 @@
       }
     ],
     "name": "ItemEquipped",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "characterId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "itemTokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "ItemUnequipped",
     "type": "event"
   },
   {
@@ -854,6 +898,19 @@
   },
   {
     "inputs": [],
+    "name": "metadataURI",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "name",
     "outputs": [
       {
@@ -1080,6 +1137,19 @@
       }
     ],
     "name": "setERC6551Registry",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_uri",
+        "type": "string"
+      }
+    ],
+    "name": "setMetadataUri",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

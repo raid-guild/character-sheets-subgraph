@@ -46,7 +46,7 @@ export function handleCharacterSheetsCreated(
     entity.dao = daoResult.value;
   }
 
-  let uriResult = contract.try_baseTokenURI();
+  let uriResult = contract.try_metadataURI();
   if (!uriResult.reverted) {
     entity.uri = uriResult.value;
   }
