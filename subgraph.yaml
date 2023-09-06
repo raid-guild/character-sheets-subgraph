@@ -6,9 +6,9 @@ dataSources:
     name: CharacterSheetsFactory
     network: goerli
     source:
-      address: "0xd81891c3F6AF2e9CE71b6d0e1cc09E560b1EB0e6"
+      address: "0x24e78AD1E96Db0ECe9b6aE58aF994146a8dE827d"
       abi: CharacterSheetsFactory
-      startBlock: 9646529
+      startBlock: 9647908
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
