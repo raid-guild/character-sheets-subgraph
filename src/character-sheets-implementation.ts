@@ -6,6 +6,7 @@ import {
   ItemUnequipped as ItemUnequippedEvent,
   ExperienceUpdated as ExperienceUpdatedEvent,
   MetadataUpdate as MetadataUpdateEvent,
+  MetadataURIUpdated as MetadataURIUpdatedEvent,
   NewCharacterSheetRolled as NewCharacterSheetRolledEvent,
   PlayerRemoved as PlayerRemovedEvent,
   RoleGranted as RoleGrantedEvent,
@@ -159,6 +160,16 @@ export function handleMetadataUpdate(event: MetadataUpdateEvent): void {
     entity.uri = result.value;
   }
 
+  entity.save();
+}
+
+export function handleMetadataURIUpdated(event: MetadataURIUpdatedEvent): void {
+  let entity = Game.load(event.address.toHex());
+  if (entity == null) {
+    return;
+  }
+
+  entity.uri = event.params.newURI;
   entity.save();
 }
 

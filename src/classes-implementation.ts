@@ -107,6 +107,12 @@ export function handleURI(event: URIEvent): void {
   if (entity == null) {
     return;
   }
-  entity.uri = event.params.value;
+
+  let result = contract.try_uri(event.params.id);
+  if (result.reverted) {
+    return;
+  }
+
+  entity.uri = result.value;
   entity.save();
 }
