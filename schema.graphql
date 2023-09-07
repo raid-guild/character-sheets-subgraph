@@ -30,12 +30,12 @@ type Character @entity {
   name: String!
   characterId: BigInt!
   account: Bytes!
-  owner: Bytes!
+  player: Bytes!
   uri: String!
   game: Game!
   experience: BigInt!
-  items: [HeldItem!]! @derivedFrom(field: "character")
-  classes: [HeldClass!]! @derivedFrom(field: "character")
+  heldItems: [HeldItem!]! @derivedFrom(field: "character")
+  heldClasses: [HeldClass!]! @derivedFrom(field: "character")
   equippedItems: [EquippedItem!]! @derivedFrom(field: "character")
   equippedClasses: [EquippedClass!]! @derivedFrom(field: "character")
   createdAt: BigInt!

@@ -185,7 +185,7 @@ export function handleNewCharacterSheetRolled(
 
   entity.name = ""; // TODO: get name from event
   entity.characterId = event.params.tokenId;
-  entity.owner = event.params.member;
+  entity.player = event.params.member;
   entity.account = event.params.erc6551;
   entity.uri = ""; // TODO: get uri from event
   entity.game = event.address.toHex();
