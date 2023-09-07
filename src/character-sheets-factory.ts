@@ -1,4 +1,4 @@
-import { Address, Bytes, dataSource } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes, dataSource } from "@graphprotocol/graph-ts";
 import {
   CharacterSheetsCreated as CharacterSheetsCreatedEvent,
   CharacterSheetsFactory,
@@ -31,6 +31,7 @@ export function handleCharacterSheetsCreated(
   entity.createdAt = event.block.timestamp;
   entity.uri = "";
   entity.dao = Address.fromI32(0);
+  entity.experience = BigInt.fromI32(0);
   entity.owners = new Array<Bytes>();
   entity.masters = new Array<Bytes>();
   entity.save();

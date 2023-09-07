@@ -21,6 +21,7 @@ type Game @entity {
   characters: [Character!]! @derivedFrom(field: "game")
   classes: [Class!]! @derivedFrom(field: "game")
   items: [Item!]! @derivedFrom(field: "game")
+  experience: BigInt!
   createdBy: Bytes!
   createdAt: BigInt!
 }

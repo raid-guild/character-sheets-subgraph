@@ -2,6 +2,7 @@ import { Address, BigInt, store } from "@graphprotocol/graph-ts";
 import {
   Character,
   ClassRequirement,
+  Game,
   HeldItem,
   Item,
   ItemRequirement,
@@ -253,6 +254,17 @@ export function handleTransferSingle(event: TransferSingleEvent): void {
   entity.experience = experience;
 
   entity.save();
+
+  let gameEntity = Game.load(game.toHex());
+  if (gameEntity == null) {
+    return;
+  }
+
+  let totalExperience = gameEntity.experience;
+  totalExperience = totalExperience.plus(event.params.amount);
+  gameEntity.experience = totalExperience;
+
+  gameEntity.save();
 }
 
 export function handleURI(event: URIEvent): void {
