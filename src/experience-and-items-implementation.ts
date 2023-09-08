@@ -1,4 +1,4 @@
-import { Address, BigInt, store } from "@graphprotocol/graph-ts";
+import { Address, BigInt, store, log } from "@graphprotocol/graph-ts";
 import {
   Character,
   ClassRequirement,
@@ -219,11 +219,17 @@ export function handleTransferBatch(event: TransferBatchEvent): void {
 
 export function handleTransferSingle(event: TransferSingleEvent): void {
   // TODO: implement for items
+
   if (event.params.id != BigInt.fromI32(0)) {
+    log.warning("TransferSingle: id is not zero", []);
     return;
   }
 
-  if (event.params.from != Address.fromI32(0)) {
+  if (
+    event.params.from !=
+    Address.fromHexString("0x0000000000000000000000000000000000000000")
+  ) {
+    log.warning("TransferSingle: from is not zero address", []);
     return;
   }
 
@@ -235,6 +241,7 @@ export function handleTransferSingle(event: TransferSingleEvent): void {
   let result = gameContract.try_getCharacterIdByNftAddress(event.params.to);
 
   if (result.reverted) {
+    log.error("TransferSingle: getCharacterIdByNftAddress reverted", []);
     return;
   }
 
@@ -246,6 +253,7 @@ export function handleTransferSingle(event: TransferSingleEvent): void {
   let entity = Character.load(characterId);
 
   if (entity == null) {
+    log.error("TransferSingle: character not found", []);
     return;
   }
 
@@ -257,6 +265,7 @@ export function handleTransferSingle(event: TransferSingleEvent): void {
 
   let gameEntity = Game.load(game.toHex());
   if (gameEntity == null) {
+    log.error("TransferSingle: game not found", []);
     return;
   }
 
