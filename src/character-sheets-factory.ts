@@ -24,7 +24,6 @@ export function handleCharacterSheetsCreated(
 ): void {
   let entity = new Game(event.params.characterSheets.toHex());
 
-  entity.characterSheetsAddress = event.params.characterSheets;
   entity.classesAddress = event.params.classes;
   entity.itemsAddress = event.params.experienceAndItems;
   entity.createdBy = event.params.creator;
