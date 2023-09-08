@@ -209,6 +209,7 @@ export function handleNewItemTypeCreated(event: NewItemTypeCreatedEvent): void {
   let item = contract.items(event.params.itemId);
 
   entity.merkleRoot = item.getClaimable();
+  entity.supply = item.getSupply();
 
   entity.save();
 }
