@@ -30,19 +30,19 @@ export function handleItemRequirementAdded(
   let itemId = game
     .toHex()
     .concat("-item-")
-    .concat(event.params.itemId.toString());
+    .concat(event.params.itemId.toHex());
 
   let requiredItemId = game
     .toHex()
     .concat("-item-")
-    .concat(event.params.requiredItemId.toString());
+    .concat(event.params.requiredItemId.toHex());
 
   let requirementId = game
     .toHex()
     .concat("-item-")
-    .concat(event.params.itemId.toString())
+    .concat(event.params.itemId.toHex())
     .concat("-requires-item-")
-    .concat(event.params.requiredItemId.toString());
+    .concat(event.params.requiredItemId.toHex());
 
   let entity = ItemRequirement.load(requirementId);
   if (entity == null) {
@@ -65,9 +65,9 @@ export function handleItemRequirementRemoved(
   let requirementId = game
     .toHex()
     .concat("-item-")
-    .concat(event.params.itemId.toString())
+    .concat(event.params.itemId.toHex())
     .concat("-requires-item-")
-    .concat(event.params.requiredItemId.toString());
+    .concat(event.params.requiredItemId.toHex());
 
   store.remove("ItemRequirement", requirementId);
 }
@@ -81,19 +81,19 @@ export function handleClassRequirementAdded(
   let itemId = game
     .toHex()
     .concat("-item-")
-    .concat(event.params.itemId.toString());
+    .concat(event.params.itemId.toHex());
 
   let requiredClassId = game
     .toHex()
     .concat("-class-")
-    .concat(event.params.requiredClassId.toString());
+    .concat(event.params.requiredClassId.toHex());
 
   let requirementId = game
     .toHex()
     .concat("-item-")
-    .concat(event.params.itemId.toString())
+    .concat(event.params.itemId.toHex())
     .concat("-requires-class-")
-    .concat(event.params.requiredClassId.toString());
+    .concat(event.params.requiredClassId.toHex());
 
   let entity = ClassRequirement.load(requirementId);
   if (entity == null) {
@@ -115,9 +115,9 @@ export function handleClassRequirementRemoved(
   let requirementId = game
     .toHex()
     .concat("-item-")
-    .concat(event.params.itemId.toString())
+    .concat(event.params.itemId.toHex())
     .concat("-requires-class-")
-    .concat(event.params.requiredClassId.toString());
+    .concat(event.params.requiredClassId.toHex());
 
   store.remove("ClassRequirement", requirementId);
 }
@@ -128,7 +128,7 @@ export function handleItemTransfered(event: ItemTransferedEvent): void {
   let itemId = game
     .toHex()
     .concat("-item-")
-    .concat(event.params.itemId.toString());
+    .concat(event.params.itemId.toHex());
 
   let gameContract = CharacterSheetsImplementation.bind(game);
 
@@ -143,14 +143,14 @@ export function handleItemTransfered(event: ItemTransferedEvent): void {
   let characterId = game
     .toHex()
     .concat("-character-")
-    .concat(result.value.toString());
+    .concat(result.value.toHex());
 
   let heldItemId = game
     .toHex()
     .concat("-item-")
-    .concat(event.params.itemId.toString())
+    .concat(event.params.itemId.toHex())
     .concat("-held-by-")
-    .concat(result.value.toString());
+    .concat(result.value.toHex());
 
   let entity = HeldItem.load(heldItemId);
   if (entity == null) {
@@ -175,7 +175,7 @@ export function handleItemClaimableUpdated(
   let itemId = game
     .toHex()
     .concat("-item-")
-    .concat(event.params.itemId.toString());
+    .concat(event.params.itemId.toHex());
 
   let entity = Item.load(itemId);
   if (entity == null) {
@@ -192,7 +192,7 @@ export function handleNewItemTypeCreated(event: NewItemTypeCreatedEvent): void {
   let itemId = game
     .toHex()
     .concat("-item-")
-    .concat(event.params.itemId.toString());
+    .concat(event.params.itemId.toHex());
 
   let entity = new Item(itemId);
   entity.itemId = event.params.itemId;
@@ -241,7 +241,7 @@ export function handleTransferSingle(event: TransferSingleEvent): void {
   let characterId = game
     .toHex()
     .concat("-character-")
-    .concat(result.value.toString());
+    .concat(result.value.toHex());
 
   let entity = Character.load(characterId);
 
@@ -270,10 +270,7 @@ export function handleTransferSingle(event: TransferSingleEvent): void {
 export function handleURI(event: URIEvent): void {
   let contract = ExperienceAndItemsImplementation.bind(event.address);
   let game = contract.characterSheets();
-  let itemId = game
-    .toHex()
-    .concat("-item-")
-    .concat(event.params.id.toString());
+  let itemId = game.toHex().concat("-item-").concat(event.params.id.toHex());
 
   let entity = Item.load(itemId);
   if (entity == null) {

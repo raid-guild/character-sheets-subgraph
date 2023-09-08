@@ -16,21 +16,21 @@ export function handleClassAssigned(event: ClassAssignedEvent): void {
   let classId = game
     .toHex()
     .concat("-class-")
-    .concat(event.params.classId.toString());
+    .concat(event.params.classId.toHex());
 
   let characterId = game
     .toHex()
     .concat("-character-")
-    .concat(event.params.characterId.toString());
+    .concat(event.params.characterId.toHex());
 
   let heldClassId = game
     .toHex()
     .concat("-class-")
     .concat(
       event.params.classId
-        .toString()
+        .toHex()
         .concat("-held-by-")
-        .concat(event.params.characterId.toString())
+        .concat(event.params.characterId.toHex())
     );
 
   let entity = HeldClass.load(heldClassId);
@@ -57,9 +57,9 @@ export function handleClassRevoked(event: ClassRevokedEvent): void {
     .concat("-class-")
     .concat(
       event.params.classId
-        .toString()
+        .toHex()
         .concat("-held-by-")
-        .concat(event.params.characterId.toString())
+        .concat(event.params.characterId.toHex())
     );
 
   store.remove("HeldClass", heldClassId);
@@ -71,7 +71,7 @@ export function handleNewClassCreated(event: NewClassCreatedEvent): void {
   let classId = game
     .toHex()
     .concat("-class-")
-    .concat(event.params.erc1155TokenId.toString());
+    .concat(event.params.erc1155TokenId.toHex());
 
   let entity = new Class(classId);
   entity.classId = event.params.erc1155TokenId;
@@ -101,7 +101,7 @@ export function handleURI(event: URIEvent): void {
   let classId = game
     .toHex()
     .concat("-class-")
-    .concat(event.params.id.toString());
+    .concat(event.params.id.toHex());
 
   let entity = Class.load(classId);
   if (entity == null) {

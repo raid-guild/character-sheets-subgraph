@@ -54,16 +54,16 @@ export function handleClassEquipped(event: ClassEquippedEvent): void {
   let heldClassId = event.address
     .toHex()
     .concat("-class-")
-    .concat(event.params.classId.toString())
+    .concat(event.params.classId.toHex())
     .concat("-held-by-")
-    .concat(event.params.characterId.toString());
+    .concat(event.params.characterId.toHex());
 
   let equippedClassId = event.address
     .toHex()
     .concat("-class-")
-    .concat(event.params.classId.toString())
+    .concat(event.params.classId.toHex())
     .concat("-equipped-by-")
-    .concat(event.params.characterId.toString());
+    .concat(event.params.characterId.toHex());
 
   let equippedClass = EquippedClass.load(equippedClassId);
   if (equippedClass == null) {
@@ -80,9 +80,9 @@ export function handleClassUnequipped(event: ClassUnequippedEvent): void {
   let equippedClassId = event.address
     .toHex()
     .concat("-class-")
-    .concat(event.params.classId.toString())
+    .concat(event.params.classId.toHex())
     .concat("-equipped-by-")
-    .concat(event.params.characterId.toString());
+    .concat(event.params.characterId.toHex());
 
   store.remove("EquippedClass", equippedClassId);
 }
@@ -101,16 +101,16 @@ export function handleItemEquipped(event: ItemEquippedEvent): void {
   let heldItemId = event.address
     .toHex()
     .concat("-item-")
-    .concat(event.params.itemTokenId.toString())
+    .concat(event.params.itemTokenId.toHex())
     .concat("-held-by-")
-    .concat(event.params.characterId.toString());
+    .concat(event.params.characterId.toHex());
 
   let equippedItemId = event.address
     .toHex()
     .concat("-item-")
-    .concat(event.params.itemTokenId.toString())
+    .concat(event.params.itemTokenId.toHex())
     .concat("-equipped-by-")
-    .concat(event.params.characterId.toString());
+    .concat(event.params.characterId.toHex());
 
   let equippedItem = EquippedItem.load(equippedItemId);
   if (equippedItem == null) {
@@ -127,9 +127,9 @@ export function handleItemUnequipped(event: ItemUnequippedEvent): void {
   let equippedItemId = event.address
     .toHex()
     .concat("-item-")
-    .concat(event.params.itemTokenId.toString())
+    .concat(event.params.itemTokenId.toHex())
     .concat("-equipped-by-")
-    .concat(event.params.characterId.toString());
+    .concat(event.params.characterId.toHex());
 
   store.remove("EquippedItem", equippedItemId);
 }
