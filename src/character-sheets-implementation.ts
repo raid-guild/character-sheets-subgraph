@@ -1,5 +1,5 @@
 import {
-  CharacterNameUpdated as CharacterNameUpdatedEvent,
+  CharacterUpdated as CharacterUpdatedEvent,
   ClassEquipped as ClassEquippedEvent,
   ItemEquipped as ItemEquippedEvent,
   ClassUnequipped as ClassUnequippedEvent,
@@ -22,9 +22,7 @@ import {
 } from "../generated/schema";
 import { BigInt, store } from "@graphprotocol/graph-ts";
 
-export function handleCharacterNameUpdated(
-  event: CharacterNameUpdatedEvent
-): void {
+export function handleCharacterUpdated(event: CharacterUpdatedEvent): void {
   let characterId = event.address
     .toHex()
     .concat("-character-")
@@ -37,6 +35,13 @@ export function handleCharacterNameUpdated(
   }
 
   character.name = event.params.newName;
+
+  let contract = CharacterSheetsImplementation.bind(event.address);
+  let result = contract.try_tokenURI(event.params.tokenId);
+  if (!result.reverted) {
+    character.uri = result.value;
+  }
+
   character.save();
 }
 

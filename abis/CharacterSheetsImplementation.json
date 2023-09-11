@@ -149,17 +149,17 @@
       {
         "indexed": false,
         "internalType": "string",
-        "name": "oldName",
+        "name": "newName",
         "type": "string"
       },
       {
         "indexed": false,
         "internalType": "string",
-        "name": "newName",
+        "name": "newCid",
         "type": "string"
       }
     ],
-    "name": "CharacterNameUpdated",
+    "name": "CharacterUpdated",
     "type": "event"
   },
   {
@@ -1367,9 +1367,14 @@
         "internalType": "string",
         "name": "newName",
         "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "newCid",
+        "type": "string"
       }
     ],
-    "name": "updateCharacterName",
+    "name": "updateCharacterMetadata",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
