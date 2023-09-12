@@ -49,7 +49,7 @@ type Class @entity {
   uri: String!
   name: String!
   holders: [HeldClass!]! @derivedFrom(field: "classEntity")
-  equipment: [EquippedClass!]! @derivedFrom(field: "classEntity")
+  equippers: [EquippedClass!]! @derivedFrom(field: "classEntity")
 }
 
 type Item @entity {
@@ -64,7 +64,7 @@ type Item @entity {
   classRequirements: [ClassRequirement!]! @derivedFrom(field: "item")
   itemRequirements: [ItemRequirement!]! @derivedFrom(field: "item")
   holders: [HeldItem!]! @derivedFrom(field: "item")
-  equipment: [EquippedItem!]! @derivedFrom(field: "item")
+  equippers: [EquippedItem!]! @derivedFrom(field: "item")
 }
 
 type ClassRequirement @entity {
