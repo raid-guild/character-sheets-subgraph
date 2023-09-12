@@ -59,6 +59,7 @@ type Item @entity {
   uri: String!
   name: String!
   supply: BigInt!
+  totalSupply: BigInt!
   merkleRoot: Bytes!
   classRequirements: [ClassRequirement!]! @derivedFrom(field: "item")
   itemRequirements: [ItemRequirement!]! @derivedFrom(field: "item")

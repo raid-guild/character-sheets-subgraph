@@ -130,6 +130,17 @@ export function handleItemTransfered(event: ItemTransferedEvent): void {
     .concat("-item-")
     .concat(event.params.itemId.toHex());
 
+  let itemEntity = Item.load(itemId);
+  if (itemEntity == null) {
+    log.error("ItemTransfered: item not found", []);
+    return;
+  }
+
+  let supply = itemEntity.supply;
+  supply = supply.minus(event.params.amount);
+  itemEntity.supply = supply;
+  itemEntity.save();
+
   let gameContract = CharacterSheetsImplementation.bind(game);
 
   let result = gameContract.try_getCharacterIdByNftAddress(
@@ -137,6 +148,7 @@ export function handleItemTransfered(event: ItemTransferedEvent): void {
   );
 
   if (result.reverted) {
+    log.error("ItemTransfered: getCharacterIdByNftAddress reverted", []);
     return;
   }
 
@@ -210,6 +222,7 @@ export function handleNewItemTypeCreated(event: NewItemTypeCreatedEvent): void {
 
   entity.merkleRoot = item.getClaimable();
   entity.supply = item.getSupply();
+  entity.totalSupply = item.getSupply();
 
   entity.save();
 }
