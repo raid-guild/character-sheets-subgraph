@@ -88,6 +88,8 @@ templates:
           handler: handleNewCharacterSheetRolled
         - event: PlayerRemoved(uint256)
           handler: handlePlayerRemoved
+        - event: PlayerJailed(address,bool)
+          handler: handlePlayerJailed
         - event: RoleGranted(indexed bytes32,indexed address,indexed address)
           handler: handleRoleGranted
         - event: RoleRevoked(indexed bytes32,indexed address,indexed address)
