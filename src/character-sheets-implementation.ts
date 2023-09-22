@@ -9,6 +9,7 @@ import {
   MetadataURIUpdated as MetadataURIUpdatedEvent,
   NewCharacterSheetRolled as NewCharacterSheetRolledEvent,
   PlayerRemoved as PlayerRemovedEvent,
+  PlayerJailed as PlayerJailedEvent,
   RoleGranted as RoleGrantedEvent,
   RoleRevoked as RoleRevokedEvent,
   Transfer as TransferEvent,
@@ -20,7 +21,7 @@ import {
   EquippedItem,
   Game,
 } from "../generated/schema";
-import { BigInt, store } from "@graphprotocol/graph-ts";
+import { log, BigInt, store } from "@graphprotocol/graph-ts";
 
 export function handleCharacterUpdated(event: CharacterUpdatedEvent): void {
   let characterId = event.address
@@ -197,6 +198,7 @@ export function handleNewCharacterSheetRolled(
   entity.experience = BigInt.fromI32(0);
   entity.createdAt = event.block.timestamp;
   entity.createdBy = event.transaction.from;
+  entity.jailed = false;
 
   let contract = CharacterSheetsImplementation.bind(event.address);
   let uriResult = contract.try_tokenURI(event.params.tokenId);
@@ -222,6 +224,34 @@ export function handlePlayerRemoved(event: PlayerRemovedEvent): void {
       .concat("-character-")
       .concat(event.params.tokenId.toHex())
   );
+}
+
+export function handlePlayerJailed(event: PlayerJailedEvent): void {
+  let playerAddress = event.params.playerAddress;
+  let isJailed = event.params.thrownInJail;
+
+  let gameContract = CharacterSheetsImplementation.bind(event.address);
+
+  let result = gameContract.try_memberAddressToTokenId(playerAddress);
+
+  if (result.reverted) {
+    log.error("ItemTransfered: memberAddressToTokenId reverted", []);
+    return;
+  }
+
+  let characterId = event.address
+    .toHex()
+    .concat("-character-")
+    .concat(result.value.toHex());
+
+  let character = Character.load(characterId);
+
+  if (character == null) {
+    return;
+  }
+
+  character.jailed = isJailed;
+  character.save();
 }
 
 export function handleRoleGranted(event: RoleGrantedEvent): void {
@@ -279,16 +309,15 @@ export function handleRoleRevoked(event: RoleRevokedEvent): void {
 }
 
 export function handleTransfer(event: TransferEvent): void {
-  // TODO: implement
-  // let entity = Character.load(
-  //   event.address
-  //     .toHex()
-  //     .concat("-character-")
-  //     .concat(event.params.tokenId.toHex())
-  // );
-  // if (entity == null) {
-  //   return;
-  // }
-  // entity.owner = event.params.to;
-  // entity.save();
+  let entity = Character.load(
+    event.address
+      .toHex()
+      .concat("-character-")
+      .concat(event.params.tokenId.toHex())
+  );
+  if (entity == null) {
+    return;
+  }
+  entity.player = event.params.to;
+  entity.save();
 }
