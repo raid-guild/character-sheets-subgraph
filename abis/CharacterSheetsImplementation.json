@@ -11,7 +11,7 @@
   },
   {
     "inputs": [],
-    "name": "DaoError",
+    "name": "EligibilityError",
     "type": "error"
   },
   {
@@ -26,7 +26,17 @@
   },
   {
     "inputs": [],
+    "name": "ItemError",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "Jailed",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NotInitialized",
     "type": "error"
   },
   {
@@ -41,13 +51,27 @@
   },
   {
     "inputs": [],
-    "name": "PlayerOnly",
+    "name": "TokenBalanceError",
     "type": "error"
   },
   {
-    "inputs": [],
-    "name": "VariableNotSet",
-    "type": "error"
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "previousAdmin",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "newAdmin",
+        "type": "address"
+      }
+    ],
+    "name": "AdminChanged",
+    "type": "event"
   },
   {
     "anonymous": false,
@@ -105,12 +129,6 @@
       {
         "indexed": false,
         "internalType": "string",
-        "name": "oldURI",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
         "name": "newURI",
         "type": "string"
       }
@@ -141,22 +159,61 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": true,
+        "internalType": "address",
+        "name": "beacon",
+        "type": "address"
+      }
+    ],
+    "name": "BeaconUpgraded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": false,
         "internalType": "uint256",
-        "name": "tokenId",
+        "name": "characterId",
         "type": "uint256"
+      }
+    ],
+    "name": "CharacterRemoved",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "player",
+        "type": "address"
       },
       {
         "indexed": false,
-        "internalType": "string",
-        "name": "newName",
-        "type": "string"
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
       },
       {
         "indexed": false,
-        "internalType": "string",
-        "name": "newCid",
-        "type": "string"
+        "internalType": "uint256",
+        "name": "characterId",
+        "type": "uint256"
+      }
+    ],
+    "name": "CharacterRestored",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "characterId",
+        "type": "uint256"
       }
     ],
     "name": "CharacterUpdated",
@@ -167,50 +224,12 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "uint256",
-        "name": "characterId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "classId",
-        "type": "uint256"
-      }
-    ],
-    "name": "ClassEquipped",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "characterId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "classId",
-        "type": "uint256"
-      }
-    ],
-    "name": "ClassUnequipped",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
         "internalType": "address",
-        "name": "exp",
+        "name": "newAdaptor",
         "type": "address"
       }
     ],
-    "name": "ExperienceUpdated",
+    "name": "EligibilityAdaptorUpdated",
     "type": "event"
   },
   {
@@ -238,7 +257,7 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "itemTokenId",
+        "name": "itemId",
         "type": "uint256"
       }
     ],
@@ -257,7 +276,7 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "itemTokenId",
+        "name": "itemId",
         "type": "uint256"
       }
     ],
@@ -269,10 +288,17 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "string",
-        "name": "oldURI",
-        "type": "string"
-      },
+        "internalType": "address",
+        "name": "items",
+        "type": "address"
+      }
+    ],
+    "name": "ItemsUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
       {
         "indexed": false,
         "internalType": "string",
@@ -302,19 +328,19 @@
       {
         "indexed": false,
         "internalType": "address",
-        "name": "member",
+        "name": "player",
         "type": "address"
       },
       {
         "indexed": false,
         "internalType": "address",
-        "name": "erc6551",
+        "name": "account",
         "type": "address"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "tokenId",
+        "name": "characterId",
         "type": "uint256"
       }
     ],
@@ -338,19 +364,6 @@
       }
     ],
     "name": "PlayerJailed",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      }
-    ],
-    "name": "PlayerRemoved",
     "type": "event"
   },
   {
@@ -454,6 +467,19 @@
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "implementation",
+        "type": "address"
+      }
+    ],
+    "name": "Upgraded",
+    "type": "event"
+  },
+  {
     "inputs": [],
     "name": "CHARACTER",
     "outputs": [
@@ -509,12 +535,31 @@
     "inputs": [
       {
         "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "_playerSheets",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
         "name": "to",
         "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "tokenId",
+        "name": "characterId",
         "type": "uint256"
       }
     ],
@@ -557,46 +602,15 @@
   },
   {
     "inputs": [],
-    "name": "classes",
+    "name": "eligibilityAdaptor",
     "outputs": [
       {
-        "internalType": "contract ClassesImplementation",
+        "internalType": "address",
         "name": "",
         "type": "address"
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "dao",
-    "outputs": [
-      {
-        "internalType": "contract IMolochDAO",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "characterId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "classId",
-        "type": "uint256"
-      }
-    ],
-    "name": "equipClassToCharacter",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -632,10 +646,10 @@
   },
   {
     "inputs": [],
-    "name": "experience",
+    "name": "erc6551Registry",
     "outputs": [
       {
-        "internalType": "contract ExperienceAndItemsImplementation",
+        "internalType": "address",
         "name": "",
         "type": "address"
       }
@@ -666,11 +680,30 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_nftAddress",
+        "name": "_account",
         "type": "address"
       }
     ],
-    "name": "getCharacterIdByNftAddress",
+    "name": "getCharacterIdByAccountAddress",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_player",
+        "type": "address"
+      }
+    ],
+    "name": "getCharacterIdByPlayerAddress",
     "outputs": [
       {
         "internalType": "uint256",
@@ -685,7 +718,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "tokenId",
+        "name": "characterId",
         "type": "uint256"
       }
     ],
@@ -694,29 +727,14 @@
       {
         "components": [
           {
-            "internalType": "uint256",
-            "name": "tokenId",
-            "type": "uint256"
-          },
-          {
-            "internalType": "string",
-            "name": "name",
-            "type": "string"
-          },
-          {
             "internalType": "address",
-            "name": "ERC6551TokenAddress",
+            "name": "playerAddress",
             "type": "address"
           },
           {
             "internalType": "address",
-            "name": "memberAddress",
+            "name": "accountAddress",
             "type": "address"
-          },
-          {
-            "internalType": "uint256[]",
-            "name": "classes",
-            "type": "uint256[]"
           },
           {
             "internalType": "uint256[]",
@@ -839,11 +857,11 @@
       },
       {
         "internalType": "uint256",
-        "name": "classId",
+        "name": "itemId",
         "type": "uint256"
       }
     ],
-    "name": "isClassEquipped",
+    "name": "isItemEquipped",
     "outputs": [
       {
         "internalType": "bool",
@@ -855,24 +873,13 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "characterId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "itemId",
-        "type": "uint256"
-      }
-    ],
-    "name": "isItemEquipped",
+    "inputs": [],
+    "name": "items",
     "outputs": [
       {
-        "internalType": "bool",
+        "internalType": "address",
         "name": "",
-        "type": "bool"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -910,25 +917,6 @@
         "internalType": "bool",
         "name": "",
         "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "memberAddressToTokenId",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -980,6 +968,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "proxiableUUID",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -1011,19 +1012,20 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_characterId",
-        "type": "uint256"
-      }
-    ],
+    "inputs": [],
     "name": "renounceSheet",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "restoreSheet",
     "outputs": [
       {
-        "internalType": "bool",
-        "name": "success",
-        "type": "bool"
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
@@ -1050,14 +1052,9 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_to",
-        "type": "address"
-      },
-      {
-        "internalType": "bytes",
-        "name": "_data",
-        "type": "bytes"
+        "internalType": "string",
+        "name": "_tokenURI",
+        "type": "string"
       }
     ],
     "name": "rollCharacterSheet",
@@ -1085,7 +1082,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "tokenId",
+        "name": "characterId",
         "type": "uint256"
       }
     ],
@@ -1108,7 +1105,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "tokenId",
+        "name": "characterId",
         "type": "uint256"
       },
       {
@@ -1195,40 +1192,6 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "sheets",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "internalType": "address",
-        "name": "ERC6551TokenAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "memberAddress",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "bytes4",
         "name": "interfaceId",
         "type": "bytes4"
@@ -1262,7 +1225,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "tokenId",
+        "name": "characterId",
         "type": "uint256"
       }
     ],
@@ -1304,7 +1267,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "tokenId",
+        "name": "characterId",
         "type": "uint256"
       }
     ],
@@ -1322,52 +1285,17 @@
       },
       {
         "internalType": "uint256",
-        "name": "classId",
-        "type": "uint256"
-      }
-    ],
-    "name": "unequipClassFromCharacter",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "success",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "characterId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
+        "name": "itemId",
         "type": "uint256"
       }
     ],
     "name": "unequipItemFromCharacter",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "success",
-        "type": "bool"
-      }
-    ],
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [
-      {
-        "internalType": "string",
-        "name": "newName",
-        "type": "string"
-      },
       {
         "internalType": "string",
         "name": "newCid",
@@ -1383,13 +1311,57 @@
     "inputs": [
       {
         "internalType": "address",
+        "name": "newAdaptor",
+        "type": "address"
+      }
+    ],
+    "name": "updateEligibilityAdaptor",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
         "name": "expContract",
         "type": "address"
       }
     ],
-    "name": "updateExpContract",
+    "name": "updateItemsContract",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newImplementation",
+        "type": "address"
+      }
+    ],
+    "name": "upgradeTo",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newImplementation",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes",
+        "name": "data",
+        "type": "bytes"
+      }
+    ],
+    "name": "upgradeToAndCall",
+    "outputs": [],
+    "stateMutability": "payable",
     "type": "function"
   }
 ]

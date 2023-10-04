@@ -1,19 +1,15 @@
 type Global @entity {
   id: ID!
   gameFactory: Bytes!
-  characterSheetsImpl: Bytes!
-  classesImpl: Bytes!
-  itemsImpl: Bytes!
-  erc6551Registry: Bytes!
-  erc6551AccountImpl: Bytes!
-  owner: Bytes!
 }
 
 type Game @entity {
   id: ID!
   classesAddress: Bytes!
   itemsAddress: Bytes!
-  dao: Bytes!
+  experienceAddress: Bytes!
+  eligibilityAdapter: Bytes!
+  classlevelAdapter: Bytes!
   uri: String!
   owners: [Bytes!]!
   masters: [Bytes!]!
@@ -27,13 +23,13 @@ type Game @entity {
 
 type Character @entity {
   id: ID!
-  name: String!
   characterId: BigInt!
   account: Bytes!
   player: Bytes!
   uri: String!
   game: Game!
   jailed: Boolean!
+  removed: Boolean!
   experience: BigInt!
   heldItems: [HeldItem!]! @derivedFrom(field: "character")
   heldClasses: [HeldClass!]! @derivedFrom(field: "character")
@@ -48,7 +44,6 @@ type Class @entity {
   game: Game!
   classId: BigInt!
   uri: String!
-  name: String!
   holders: [HeldClass!]! @derivedFrom(field: "classEntity")
   equippers: [EquippedClass!]! @derivedFrom(field: "classEntity")
 }
@@ -58,12 +53,11 @@ type Item @entity {
   game: Game!
   itemId: BigInt!
   uri: String!
-  name: String!
   supply: BigInt!
+  supplied: BigInt!
   totalSupply: BigInt!
   merkleRoot: Bytes!
-  classRequirements: [ClassRequirement!]! @derivedFrom(field: "item")
-  itemRequirements: [ItemRequirement!]! @derivedFrom(field: "item")
+  requirements: [ItemRequirement!]! @derivedFrom(field: "item")
   holders: [HeldItem!]! @derivedFrom(field: "item")
   equippers: [EquippedItem!]! @derivedFrom(field: "item")
 }
@@ -74,11 +68,19 @@ type ClassRequirement @entity {
   requiredClass: Class!
 }
 
+enum AssetCategory @entity {
+  ERC20
+  ERC721
+  ERC1155
+}
+
 type ItemRequirement @entity {
   id: ID!
   item: Item!
-  requiredItem: Item!
-  requiredAmount: BigInt!
+  assetCategory: AssetCategory!
+  assetAddress: Bytes!
+  assetId: BigInt!
+  amount: BigInt!
 }
 
 type HeldItem @entity {
