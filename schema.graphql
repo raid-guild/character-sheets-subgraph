@@ -34,7 +34,6 @@ type Character @entity {
   heldItems: [HeldItem!]! @derivedFrom(field: "character")
   heldClasses: [HeldClass!]! @derivedFrom(field: "character")
   equippedItems: [EquippedItem!]! @derivedFrom(field: "character")
-  equippedClasses: [EquippedClass!]! @derivedFrom(field: "character")
   createdAt: BigInt!
   createdBy: Bytes!
 }
@@ -45,7 +44,6 @@ type Class @entity {
   classId: BigInt!
   uri: String!
   holders: [HeldClass!]! @derivedFrom(field: "classEntity")
-  equippers: [EquippedClass!]! @derivedFrom(field: "classEntity")
 }
 
 type Item @entity {
@@ -102,11 +100,4 @@ type EquippedItem @entity {
   character: Character!
   item: Item!
   heldItem: HeldItem!
-}
-
-type EquippedClass @entity {
-  id: ID!
-  character: Character!
-  classEntity: Class!
-  heldClass: HeldClass!
 }
