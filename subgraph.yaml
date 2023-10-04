@@ -23,25 +23,13 @@ dataSources:
           file: ./abis/CharacterSheetsImplementation.json
         - name: ClassesImplementation
           file: ./abis/ClassesImplementation.json
-        - name: ExperienceAndItemsImplementation
-          file: ./abis/ExperienceAndItemsImplementation.json
+        - name: ItemsImplementation
+          file: ./abis/ItemsImplementation.json
+        - name: ExperienceImplementation
+          file: ./abis/ExperienceImplementation.json
       eventHandlers:
-        - event: CharacterSheetsCreated(address,address,address,address)
+        - event: CharacterSheetsCreated(address,address,address,address,address)
           handler: handleCharacterSheetsCreated
-        - event: CharacterSheetsUpdated(address)
-          handler: handleCharacterSheetsUpdated
-        - event: ClassesImplementationUpdated(address)
-          handler: handleClassesImplementationUpdated
-        - event: ERC6551AccountImplementationUpdated(address)
-          handler: handleERC6551AccountImplementationUpdated
-        - event: ExperienceUpdated(address)
-          handler: handleExperienceUpdated
-        - event: Initialized(uint64)
-          handler: handleInitialized
-        - event: OwnershipTransferred(indexed address,indexed address)
-          handler: handleOwnershipTransferred
-        - event: RegistryUpdated(address)
-          handler: handleRegistryUpdated
       file: ./src/character-sheets-factory.ts
 templates:
   - kind: ethereum
@@ -65,31 +53,27 @@ templates:
           file: ./abis/CharacterSheetsImplementation.json
         - name: ClassesImplementation
           file: ./abis/ClassesImplementation.json
-        - name: ExperienceAndItemsImplementation
-          file: ./abis/ExperienceAndItemsImplementation.json
+        - name: ItemsImplementation
+          file: ./abis/ItemsImplementation.json
+        - name: ExperienceImplementation
+          file: ./abis/ExperienceImplementation.json
       eventHandlers:
-        - event: CharacterUpdated(uint256,string,string)
-          handler: handleCharacterUpdated
-        - event: ClassEquipped(uint256,uint256)
-          handler: handleClassEquipped
-        - event: ItemEquipped(uint256,uint256)
-          handler: handleItemEquipped
-        - event: ClassUnequipped(uint256,uint256)
-          handler: handleClassUnequipped
-        - event: ItemUnequipped(uint256,uint256)
-          handler: handleItemUnequipped
-        - event: ExperienceUpdated(address)
-          handler: handleExperienceUpdated
-        - event: MetadataUpdate(uint256)
-          handler: handleMetadataUpdate
-        - event: MetadataURIUpdated(string,string)
-          handler: handleMetadataURIUpdated
         - event: NewCharacterSheetRolled(address,address,uint256)
           handler: handleNewCharacterSheetRolled
-        - event: PlayerRemoved(uint256)
-          handler: handlePlayerRemoved
+        - event: MetadataURIUpdated(string)
+          handler: handleMetadataURIUpdated
+        - event: CharacterRemoved(uint256)
+          handler: handleCharacterRemoved
+        - event: ItemEquipped(uint256,uint256)
+          handler: handleItemEquipped
+        - event: ItemUnequipped(uint256,uint256)
+          handler: handleItemUnequipped
+        - event: CharacterUpdated(uint256)
+          handler: handleCharacterUpdated
         - event: PlayerJailed(address,bool)
           handler: handlePlayerJailed
+        - event: CharacterRestored(address,address,uint256)
+          handler: handleCharacterRestored
         - event: RoleGranted(indexed bytes32,indexed address,indexed address)
           handler: handleRoleGranted
         - event: RoleRevoked(indexed bytes32,indexed address,indexed address)
@@ -98,10 +82,10 @@ templates:
           handler: handleTransfer
       file: ./src/character-sheets-implementation.ts
   - kind: ethereum
-    name: ExperienceAndItemsImplementation
+    name: ItemsImplementation
     network: goerli
     source:
-      abi: ExperienceAndItemsImplementation
+      abi: ItemsImplementation
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -117,22 +101,28 @@ templates:
           file: ./abis/CharacterSheetsImplementation.json
         - name: ClassesImplementation
           file: ./abis/ClassesImplementation.json
-        - name: ExperienceAndItemsImplementation
-          file: ./abis/ExperienceAndItemsImplementation.json
+        - name: ItemsImplementation
+          file: ./abis/ItemsImplementation.json
+        - name: ExperienceImplementation
+          file: ./abis/ExperienceImplementation.json
       eventHandlers:
+        - event: NewItemTypeCreated(uint256)
+          handler: handleNewItemTypeCreated
         - event: ItemTransfered(address,uint256,uint256)
           handler: handleItemTransfered
         - event: ItemClaimableUpdated(uint256,bytes32)
           handler: handleItemClaimableUpdated
-        - event: NewItemTypeCreated(uint256,string)
-          handler: handleNewItemTypeCreated
+        - event: RequirementAdded(uint256,uint8,address,uint256,uint256)
+          handler: handleRequirementAdded
+        - event: RequirementRemoved(uint256,address,uint256)
+          handler: handleRequirementRemoved
         - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
           handler: handleTransferBatch
         - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
           handler: handleTransferSingle
         - event: URI(string,indexed uint256)
           handler: handleURI
-      file: ./src/experience-and-items-implementation.ts
+      file: ./src/items-implementation.ts
   - kind: ethereum
     name: ClassesImplementation
     network: goerli
@@ -153,15 +143,19 @@ templates:
           file: ./abis/CharacterSheetsImplementation.json
         - name: ClassesImplementation
           file: ./abis/ClassesImplementation.json
-        - name: ExperienceAndItemsImplementation
-          file: ./abis/ExperienceAndItemsImplementation.json
+        - name: ItemsImplementation
+          file: ./abis/ItemsImplementation.json
+        - name: ExperienceImplementation
+          file: ./abis/ExperienceImplementation.json
       eventHandlers:
-        - event: ClassAssigned(uint256,uint256)
-          handler: handleClassAssigned
-        - event: ClassRevoked(uint256,uint256)
-          handler: handleClassRevoked
-        - event: NewClassCreated(uint256,string)
+        - event: NewClassCreated(uint256)
           handler: handleNewClassCreated
+        - event: ClassAssigned(address,uint256)
+          handler: handleClassAssigned
+        - event: ClassRevoked(address,uint256)
+          handler: handleClassRevoked
+        - event: ClassLeveled(address,uint256,uint256)
+          handler: handleClassLeveled
         - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
           handler: handleTransferBatch
         - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
@@ -169,3 +163,31 @@ templates:
         - event: URI(string,indexed uint256)
           handler: handleURI
       file: ./src/classes-implementation.ts
+  - kind: ethereum
+    name: ExperienceImplementation
+    network: goerli
+    source:
+      abi: ExperienceImplementation
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Character
+        - Item
+        - Class
+      abis:
+        - name: CharacterSheetsFactory
+          file: ./abis/CharacterSheetsFactory.json
+        - name: CharacterSheetsImplementation
+          file: ./abis/CharacterSheetsImplementation.json
+        - name: ClassesImplementation
+          file: ./abis/ClassesImplementation.json
+        - name: ItemsImplementation
+          file: ./abis/ItemsImplementation.json
+        - name: ExperienceImplementation
+          file: ./abis/ExperienceImplementation.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+      file: ./src/experience-implementation.ts

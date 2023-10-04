@@ -6,6 +6,21 @@
   },
   {
     "inputs": [],
+    "name": "CharacterError",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "CharacterOnly",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ClaimableError",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "ClassError",
     "type": "error"
   },
@@ -16,13 +31,37 @@
   },
   {
     "inputs": [],
-    "name": "OwnershipError",
+    "name": "InsufficientBalance",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "PlayerError",
+    "name": "NotInitialized",
     "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "TokenBalanceError",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "previousAdmin",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "newAdmin",
+        "type": "address"
+      }
+    ],
+    "name": "AdminChanged",
+    "type": "event"
   },
   {
     "anonymous": false,
@@ -30,7 +69,7 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "owner",
+        "name": "account",
         "type": "address"
       },
       {
@@ -53,10 +92,36 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": true,
+        "internalType": "address",
+        "name": "beacon",
+        "type": "address"
+      }
+    ],
+    "name": "BeaconUpgraded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": false,
-        "internalType": "uint256",
-        "name": "characterId",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "newCharacterSheets",
+        "type": "address"
+      }
+    ],
+    "name": "CharacterSheetsUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "character",
+        "type": "address"
       },
       {
         "indexed": false,
@@ -73,9 +138,47 @@
     "inputs": [
       {
         "indexed": false,
+        "internalType": "address",
+        "name": "newClassLevelAdaptor",
+        "type": "address"
+      }
+    ],
+    "name": "ClassLevelAdaptorUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "character",
+        "type": "address"
+      },
+      {
+        "indexed": false,
         "internalType": "uint256",
-        "name": "characterId",
+        "name": "classId",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newLevel",
+        "type": "uint256"
+      }
+    ],
+    "name": "ClassLeveled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "character",
+        "type": "address"
       },
       {
         "indexed": false,
@@ -85,6 +188,19 @@
       }
     ],
     "name": "ClassRevoked",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "newExperience",
+        "type": "address"
+      }
+    ],
+    "name": "ExperienceUpdated",
     "type": "event"
   },
   {
@@ -106,14 +222,8 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "erc1155TokenId",
+        "name": "tokenId",
         "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
       }
     ],
     "name": "NewClassCreated",
@@ -149,7 +259,7 @@
       {
         "indexed": false,
         "internalType": "uint256[]",
-        "name": "amounts",
+        "name": "values",
         "type": "uint256[]"
       }
     ],
@@ -186,7 +296,7 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "amount",
+        "name": "value",
         "type": "uint256"
       }
     ],
@@ -210,6 +320,19 @@
       }
     ],
     "name": "URI",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "implementation",
+        "type": "address"
+      }
+    ],
+    "name": "Upgraded",
     "type": "event"
   },
   {
@@ -239,24 +362,11 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "PLAYER",
-    "outputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "characterId",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "character",
+        "type": "address"
       },
       {
         "internalType": "uint256",
@@ -272,26 +382,8 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "characterId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "_classIds",
-        "type": "uint256[]"
-      }
-    ],
-    "name": "assignClasses",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "address",
-        "name": "owner",
+        "name": "account",
         "type": "address"
       },
       {
@@ -304,7 +396,7 @@
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "balance",
+        "name": "",
         "type": "uint256"
       }
     ],
@@ -315,7 +407,7 @@
     "inputs": [
       {
         "internalType": "address[]",
-        "name": "owners",
+        "name": "accounts",
         "type": "address[]"
       },
       {
@@ -328,7 +420,7 @@
     "outputs": [
       {
         "internalType": "uint256[]",
-        "name": "balances",
+        "name": "",
         "type": "uint256[]"
       }
     ],
@@ -340,7 +432,7 @@
     "name": "characterSheets",
     "outputs": [
       {
-        "internalType": "contract CharacterSheetsImplementation",
+        "internalType": "address",
         "name": "",
         "type": "address"
       }
@@ -352,31 +444,53 @@
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "classId",
+        "type": "uint256"
+      }
+    ],
+    "name": "claimClass",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "classLevelAdaptor",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
         "name": "",
         "type": "uint256"
       }
     ],
-    "name": "classes",
+    "name": "classLevels",
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "tokenId",
+        "name": "",
         "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "internalType": "uint256",
-        "name": "supply",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "cid",
-        "type": "string"
       }
     ],
     "stateMutability": "view",
@@ -404,17 +518,35 @@
   {
     "inputs": [
       {
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
-      }
-    ],
-    "name": "findClassByName",
-    "outputs": [
-      {
         "internalType": "uint256",
         "name": "classId",
         "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "numberOfLevels",
+        "type": "uint256"
+      }
+    ],
+    "name": "deLevelClass",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "experience",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -428,23 +560,13 @@
         "components": [
           {
             "internalType": "uint256",
-            "name": "tokenId",
-            "type": "uint256"
-          },
-          {
-            "internalType": "string",
-            "name": "name",
-            "type": "string"
-          },
-          {
-            "internalType": "uint256",
             "name": "supply",
             "type": "uint256"
           },
           {
-            "internalType": "string",
-            "name": "cid",
-            "type": "string"
+            "internalType": "bool",
+            "name": "claimable",
+            "type": "bool"
           }
         ],
         "internalType": "struct Class[]",
@@ -476,29 +598,19 @@
         "type": "uint256"
       }
     ],
-    "name": "getClassById",
+    "name": "getClass",
     "outputs": [
       {
         "components": [
-          {
-            "internalType": "uint256",
-            "name": "tokenId",
-            "type": "uint256"
-          },
-          {
-            "internalType": "string",
-            "name": "name",
-            "type": "string"
-          },
           {
             "internalType": "uint256",
             "name": "supply",
             "type": "uint256"
           },
           {
-            "internalType": "string",
-            "name": "cid",
-            "type": "string"
+            "internalType": "bool",
+            "name": "claimable",
+            "type": "bool"
           }
         ],
         "internalType": "struct Class",
@@ -526,12 +638,12 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "",
+        "name": "account",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "",
+        "name": "operator",
         "type": "address"
       }
     ],
@@ -544,6 +656,30 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "character",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "classId",
+        "type": "uint256"
+      }
+    ],
+    "name": "levelClass",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -625,11 +761,43 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "proxiableUUID",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "characterId",
+        "name": "classId",
         "type": "uint256"
+      }
+    ],
+    "name": "renounceClass",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "success",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "character",
+        "type": "address"
       },
       {
         "internalType": "uint256",
@@ -735,6 +903,37 @@
   {
     "inputs": [
       {
+        "internalType": "string",
+        "name": "_baseUri",
+        "type": "string"
+      }
+    ],
+    "name": "setBaseURI",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "tokenURI",
+        "type": "string"
+      }
+    ],
+    "name": "setURI",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "bytes4",
         "name": "interfaceId",
         "type": "bytes4"
@@ -762,6 +961,76 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newCharSheets",
+        "type": "address"
+      }
+    ],
+    "name": "updateCharacterSheetsContract",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newClassLevelAdaptor",
+        "type": "address"
+      }
+    ],
+    "name": "updateClassLevelAdaptor",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newExperience",
+        "type": "address"
+      }
+    ],
+    "name": "updateExperienceContract",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newImplementation",
+        "type": "address"
+      }
+    ],
+    "name": "upgradeTo",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newImplementation",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes",
+        "name": "data",
+        "type": "bytes"
+      }
+    ],
+    "name": "upgradeToAndCall",
+    "outputs": [],
+    "stateMutability": "payable",
     "type": "function"
   },
   {
