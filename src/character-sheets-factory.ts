@@ -12,6 +12,7 @@ import {
 } from "../generated/templates";
 
 import { CharacterSheetsImplementation as CharacterSheetsContract } from "../generated/templates/CharacterSheetsImplementation/CharacterSheetsImplementation";
+import { ClassesImplementation } from "../generated/templates/ClassesImplementation/ClassesImplementation";
 
 export function handleCharacterSheetsCreated(
   event: CharacterSheetsCreatedEvent
@@ -25,6 +26,7 @@ export function handleCharacterSheetsCreated(
   entity.createdAt = event.block.timestamp;
   entity.uri = "";
   entity.eligibilityAdapter = Address.fromI32(0);
+  entity.classlevelAdapter = Address.fromI32(0);
   entity.experience = BigInt.fromI32(0);
   entity.owners = new Array<Bytes>();
   entity.masters = new Array<Bytes>();
@@ -37,7 +39,7 @@ export function handleCharacterSheetsCreated(
 
   let contract = CharacterSheetsContract.bind(event.params.characterSheets);
 
-  let eligibilityAdapterResult = contract.try_eligibilityAdaptor()
+  let eligibilityAdapterResult = contract.try_eligibilityAdaptor();
   if (!eligibilityAdapterResult.reverted) {
     entity.eligibilityAdapter = eligibilityAdapterResult.value;
   }
@@ -45,6 +47,13 @@ export function handleCharacterSheetsCreated(
   let uriResult = contract.try_metadataURI();
   if (!uriResult.reverted) {
     entity.uri = uriResult.value;
+  }
+
+  let classesContract = ClassesImplementation.bind(event.params.classes);
+
+  let classlevelAdapterResult = classesContract.try_classLevelAdaptor();
+  if (!classlevelAdapterResult.reverted) {
+    entity.classlevelAdapter = classlevelAdapterResult.value;
   }
 
   entity.save();
