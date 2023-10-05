@@ -6,9 +6,9 @@ dataSources:
     name: CharacterSheetsFactory
     network: goerli
     source:
-      address: "0x453C82CF49eA5eAa9535b19F858025416be98F79"
+      address: "0x6a4FBdA320eaF5E319178630384D8d633503267f"
       abi: CharacterSheetsFactory
-      startBlock: 9688594
+      startBlock: 9797425
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -30,6 +30,8 @@ dataSources:
       eventHandlers:
         - event: CharacterSheetsCreated(address,address,address,address,address)
           handler: handleCharacterSheetsCreated
+        - event: Initialized(uint8)
+          handler: handleInitialized
       file: ./src/character-sheets-factory.ts
 templates:
   - kind: ethereum
