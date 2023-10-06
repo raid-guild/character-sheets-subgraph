@@ -41,7 +41,10 @@ function _newItemRequirement(
   assetIdBG: BigInt,
   amountBG: BigInt
 ): void {
-  let itemId = gameAddress.toHex().concat("-item-").concat(itemIdBG.toHex());
+  let itemId = gameAddress
+    .toHex()
+    .concat("-item-")
+    .concat(itemIdBG.toHex());
 
   let assetId = assetAddress
     .toHex()
@@ -62,12 +65,12 @@ function _newItemRequirement(
 
   entity.item = itemId;
 
-  let category = "erc20";
+  let category = "ERC20";
   if (assetCategory == 1) {
-    category = "erc721";
+    category = "ERC721";
   }
   if (assetCategory == 2) {
-    category = "erc1155";
+    category = "ERC1155";
   }
   entity.assetCategory = category;
   entity.assetAddress = assetAddress;
@@ -227,7 +230,10 @@ export function handleTransferSingle(event: TransferSingleEvent): void {
 export function handleURI(event: URIEvent): void {
   let contract = ItemsImplementation.bind(event.address);
   let game = contract.characterSheets();
-  let itemId = game.toHex().concat("-item-").concat(event.params.id.toHex());
+  let itemId = game
+    .toHex()
+    .concat("-item-")
+    .concat(event.params.id.toHex());
 
   let entity = Item.load(itemId);
   if (entity == null) {
