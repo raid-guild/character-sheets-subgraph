@@ -197,6 +197,7 @@ export function handleNewItemTypeCreated(event: NewItemTypeCreatedEvent): void {
   let item = contract.getItem(event.params.itemId);
 
   entity.merkleRoot = item.claimable;
+  entity.soulbound = item.soulbound;
   entity.supply = item.supply;
   entity.supplied = item.supplied;
   entity.totalSupply = item.supply;
