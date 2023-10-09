@@ -51,6 +51,7 @@ type Item @entity {
   game: Game!
   itemId: BigInt!
   uri: String!
+  soulbound: Boolean!
   supply: BigInt!
   supplied: BigInt!
   totalSupply: BigInt!
