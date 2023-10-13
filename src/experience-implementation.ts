@@ -1,8 +1,5 @@
 import { Address, log } from "@graphprotocol/graph-ts";
-import {
-  Character,
-  Game,
-} from "../generated/schema";
+import { Character, Game } from "../generated/schema";
 import { CharacterSheetsImplementation } from "../generated/templates/CharacterSheetsImplementation/CharacterSheetsImplementation";
 
 import {
