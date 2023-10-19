@@ -9,7 +9,7 @@ import {
   ClassesImplementation,
 } from "../generated/templates/ClassesImplementation/ClassesImplementation";
 import { Class, HeldClass } from "../generated/schema";
-import { BigInt, store } from "@graphprotocol/graph-ts";
+import { BigInt, log, store } from "@graphprotocol/graph-ts";
 import { CharacterSheetsImplementation } from "../generated/templates/CharacterSheetsImplementation/CharacterSheetsImplementation";
 
 export function handleClassAssigned(event: ClassAssignedEvent): void {
@@ -133,6 +133,15 @@ export function handleNewClassCreated(event: NewClassCreatedEvent): void {
   entity.game = game.toHex();
   entity.uri = "";
 
+  let classResult = contract.try_getClass(event.params.tokenId);
+
+  if (classResult.reverted) {
+    log.error("Class {} does not exist", [event.params.tokenId.toString()]);
+    return;
+  }
+
+  entity.claimable = classResult.value.claimable;
+
   let result = contract.try_uri(event.params.tokenId);
   if (!result.reverted) {
     entity.uri = result.value;
@@ -152,7 +161,10 @@ export function handleTransferSingle(event: TransferSingleEvent): void {
 export function handleURI(event: URIEvent): void {
   let contract = ClassesImplementation.bind(event.address);
   let game = contract.characterSheets();
-  let classId = game.toHex().concat("-class-").concat(event.params.id.toHex());
+  let classId = game
+    .toHex()
+    .concat("-class-")
+    .concat(event.params.id.toHex());
 
   let entity = Class.load(classId);
   if (entity == null) {

@@ -42,6 +42,7 @@ type Class @entity {
   id: ID!
   game: Game!
   classId: BigInt!
+  claimable: Boolean!
   uri: String!
   holders: [HeldClass!]! @derivedFrom(field: "classEntity")
 }
