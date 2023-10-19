@@ -13,7 +13,7 @@ import {
   CharacterSheetsImplementation,
 } from "../generated/templates/CharacterSheetsImplementation/CharacterSheetsImplementation";
 import { Character, Game, EquippedItem } from "../generated/schema";
-import { log, BigInt, store } from "@graphprotocol/graph-ts";
+import { Address, log, BigInt, store } from "@graphprotocol/graph-ts";
 
 export function handleCharacterUpdated(event: CharacterUpdatedEvent): void {
   let characterId = event.address
@@ -245,6 +245,12 @@ export function handleTransfer(event: TransferEvent): void {
       .concat(event.params.tokenId.toHex())
   );
   if (entity == null) {
+    return;
+  }
+  if (
+    event.params.to ==
+    Address.fromHexString("0x0000000000000000000000000000000000000000")
+  ) {
     return;
   }
   entity.player = event.params.to;
