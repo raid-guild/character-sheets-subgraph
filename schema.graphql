@@ -30,6 +30,7 @@ type Character @entity {
   game: Game!
   jailed: Boolean!
   removed: Boolean!
+  approved: Bytes!
   experience: BigInt!
   heldItems: [HeldItem!]! @derivedFrom(field: "character")
   heldClasses: [HeldClass!]! @derivedFrom(field: "character")
