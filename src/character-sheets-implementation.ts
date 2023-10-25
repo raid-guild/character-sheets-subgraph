@@ -1,4 +1,5 @@
 import {
+  Approval as ApprovalEvent,
   NewCharacterSheetRolled as NewCharacterSheetRolledEvent,
   MetadataURIUpdated as MetadataURIUpdatedEvent,
   CharacterRemoved as CharacterRemovedEvent,
@@ -112,6 +113,9 @@ export function handleNewCharacterSheetRolled(
   entity.createdBy = event.transaction.from;
   entity.jailed = false;
   entity.removed = false;
+  entity.approved = Address.fromString(
+    "0x0000000000000000000000000000000000000000"
+  );
   entity.uri = "";
 
   let contract = CharacterSheetsImplementation.bind(event.address);
@@ -237,6 +241,20 @@ export function handleRoleRevoked(event: RoleRevokedEvent): void {
   entity.save();
 }
 
+export function handleApproval(event: ApprovalEvent): void {
+  let entity = Character.load(
+    event.address
+      .toHex()
+      .concat("-character-")
+      .concat(event.params.tokenId.toHex())
+  );
+  if (entity == null) {
+    return;
+  }
+  entity.approved = event.params.approved;
+  entity.save();
+}
+
 export function handleTransfer(event: TransferEvent): void {
   let entity = Character.load(
     event.address
@@ -254,5 +272,8 @@ export function handleTransfer(event: TransferEvent): void {
     return;
   }
   entity.player = event.params.to;
+  entity.approved = Address.fromString(
+    "0x0000000000000000000000000000000000000000"
+  );
   entity.save();
 }

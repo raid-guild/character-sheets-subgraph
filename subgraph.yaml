@@ -60,6 +60,8 @@ templates:
         - name: ExperienceImplementation
           file: ./abis/ExperienceImplementation.json
       eventHandlers:
+        - event: Approval(indexed address,indexed address,indexed uint256)
+          handler: handleApproval
         - event: NewCharacterSheetRolled(address,address,uint256)
           handler: handleNewCharacterSheetRolled
         - event: MetadataURIUpdated(string)
