@@ -6,9 +6,9 @@ dataSources:
     name: CharacterSheetsFactory
     network: goerli
     source:
-      address: "0x7ded952DE30bf80c43744F96Fb72397e715aE49E"
+      address: "0x6973847B028a38947845167365Ca54D5F9D5c101"
       abi: CharacterSheetsFactory
-      startBlock: 9814265
+      startBlock: 9970019
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -27,10 +27,16 @@ dataSources:
           file: ./abis/ItemsImplementation.json
         - name: ExperienceImplementation
           file: ./abis/ExperienceImplementation.json
+        - name: IClonesAddressStorage
+          file: ./abis/IClonesAddressStorage.json
+        - name: ImplementationAddressStorage
+          file: ./abis/ImplementationAddressStorage.json
+        - name: HatsAdaptor
+          file: ./abis/HatsAdaptor.json
       eventHandlers:
-        - event: CharacterSheetsCreated(address,address,address,address,address)
-          handler: handleCharacterSheetsCreated
-        - event: Initialized(uint8)
+        - event: NewGameStarted(address,address,bytes,bytes)
+          handler: handleNewGameStarted
+        - event: Initialized(uint64)
           handler: handleInitialized
       file: ./src/character-sheets-factory.ts
 templates:
@@ -59,6 +65,8 @@ templates:
           file: ./abis/ItemsImplementation.json
         - name: ExperienceImplementation
           file: ./abis/ExperienceImplementation.json
+        - name: IClonesAddressStorage
+          file: ./abis/IClonesAddressStorage.json
       eventHandlers:
         - event: Approval(indexed address,indexed address,indexed uint256)
           handler: handleApproval
@@ -78,13 +86,44 @@ templates:
           handler: handlePlayerJailed
         - event: CharacterRestored(address,address,uint256)
           handler: handleCharacterRestored
-        - event: RoleGranted(indexed bytes32,indexed address,indexed address)
-          handler: handleRoleGranted
-        - event: RoleRevoked(indexed bytes32,indexed address,indexed address)
-          handler: handleRoleRevoked
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
       file: ./src/character-sheets-implementation.ts
+  - kind: ethereum
+    name: HatsProtocol
+    network: goerli
+    source:
+      abi: HatsProtocol
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Game
+        - Character
+        - Item
+        - Class
+      abis:
+        - name: CharacterSheetsFactory
+          file: ./abis/CharacterSheetsFactory.json
+        - name: CharacterSheetsImplementation
+          file: ./abis/CharacterSheetsImplementation.json
+        - name: ClassesImplementation
+          file: ./abis/ClassesImplementation.json
+        - name: ItemsImplementation
+          file: ./abis/ItemsImplementation.json
+        - name: ExperienceImplementation
+          file: ./abis/ExperienceImplementation.json
+        - name: IClonesAddressStorage
+          file: ./abis/IClonesAddressStorage.json
+        - name: HatsAdaptor
+          file: ./abis/HatsAdaptor.json
+        - name: HatsProtocol
+          file: ./abis/Hats.json
+      eventHandlers:
+        - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleTransferSingle
+      file: ./src/hats-protocol.ts
   - kind: ethereum
     name: ItemsImplementation
     network: goerli
@@ -109,17 +148,17 @@ templates:
           file: ./abis/ItemsImplementation.json
         - name: ExperienceImplementation
           file: ./abis/ExperienceImplementation.json
+        - name: ItemsManagerImplementation
+          file: ./abis/ItemsManagerImplementation.json
+        - name: IClonesAddressStorage
+          file: ./abis/IClonesAddressStorage.json
       eventHandlers:
         - event: NewItemTypeCreated(uint256)
           handler: handleNewItemTypeCreated
         - event: ItemTransfered(address,uint256,uint256)
           handler: handleItemTransfered
-        - event: ItemClaimableUpdated(uint256,bytes32)
+        - event: ItemClaimableUpdated(uint256,bytes32,uint256)
           handler: handleItemClaimableUpdated
-        - event: RequirementAdded(uint256,uint8,address,uint256,uint256)
-          handler: handleRequirementAdded
-        - event: RequirementRemoved(uint256,address,uint256)
-          handler: handleRequirementRemoved
         - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
           handler: handleTransferBatch
         - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
@@ -151,6 +190,8 @@ templates:
           file: ./abis/ItemsImplementation.json
         - name: ExperienceImplementation
           file: ./abis/ExperienceImplementation.json
+        - name: IClonesAddressStorage
+          file: ./abis/IClonesAddressStorage.json
       eventHandlers:
         - event: NewClassCreated(uint256)
           handler: handleNewClassCreated
@@ -191,6 +232,8 @@ templates:
           file: ./abis/ItemsImplementation.json
         - name: ExperienceImplementation
           file: ./abis/ExperienceImplementation.json
+        - name: IClonesAddressStorage
+          file: ./abis/IClonesAddressStorage.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer

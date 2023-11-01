@@ -1,37 +1,18 @@
-import { Address, BigInt, store, log } from "@graphprotocol/graph-ts";
-import {
-  Character,
-  Game,
-  Item,
-  HeldItem,
-  ItemRequirement,
-} from "../generated/schema";
+import { Address, BigInt, log } from "@graphprotocol/graph-ts";
+import { Item, HeldItem, ItemRequirement } from "../generated/schema";
 import { CharacterSheetsImplementation } from "../generated/templates/CharacterSheetsImplementation/CharacterSheetsImplementation";
 import {
   ItemsImplementation,
   NewItemTypeCreated as NewItemTypeCreatedEvent,
   ItemTransfered as ItemTransferedEvent,
   ItemClaimableUpdated as ItemClaimableUpdatedEvent,
-  RequirementAdded as RequirementAddedEvent,
-  RequirementRemoved as RequirementRemovedEvent,
   TransferBatch as TransferBatchEvent,
   TransferSingle as TransferSingleEvent,
   URI as URIEvent,
 } from "../generated/templates/ItemsImplementation/ItemsImplementation";
 
-export function handleRequirementAdded(event: RequirementAddedEvent): void {
-  let contract = ItemsImplementation.bind(event.address);
-  let game = contract.characterSheets();
-
-  _newItemRequirement(
-    game,
-    event.params.itemId,
-    event.params.category,
-    event.params.assetAddress,
-    event.params.assetId,
-    event.params.amount
-  );
-}
+import { ItemsManagerImplementation } from "../generated/templates/ItemsImplementation/ItemsManagerImplementation";
+import { IClonesAddressStorage } from "../generated/templates/ItemsImplementation/IClonesAddressStorage";
 
 function _newItemRequirement(
   gameAddress: Address,
@@ -41,10 +22,7 @@ function _newItemRequirement(
   assetIdBG: BigInt,
   amountBG: BigInt
 ): void {
-  let itemId = gameAddress
-    .toHex()
-    .concat("-item-")
-    .concat(itemIdBG.toHex());
+  let itemId = gameAddress.toHex().concat("-item-").concat(itemIdBG.toHex());
 
   let assetId = assetAddress
     .toHex()
@@ -80,28 +58,21 @@ function _newItemRequirement(
   entity.save();
 }
 
-export function handleRequirementRemoved(event: RequirementRemovedEvent): void {
-  let contract = ItemsImplementation.bind(event.address);
-  let game = contract.characterSheets();
+function getGameAddress(itemsAddress: Address): Address {
+  let contract = ItemsImplementation.bind(itemsAddress);
 
-  let assetId = event.params.assetAddress
-    .toHex()
-    .concat("-asset-")
-    .concat(event.params.assetId.toHex());
+  let clones = contract.clones();
 
-  let requirementId = game
-    .toHex()
-    .concat("-item-")
-    .concat(event.params.itemId.toHex())
-    .concat("-requires-")
-    .concat(assetId);
+  let clonesStorage = IClonesAddressStorage.bind(clones);
 
-  store.remove("ItemRequirement", requirementId);
+  let game = clonesStorage.characterSheets();
+
+  return game;
 }
 
 export function handleItemTransfered(event: ItemTransferedEvent): void {
-  let contract = ItemsImplementation.bind(event.address);
-  let game = contract.characterSheets();
+  let game = getGameAddress(event.address);
+
   let itemId = game
     .toHex()
     .concat("-item-")
@@ -159,8 +130,7 @@ export function handleItemTransfered(event: ItemTransferedEvent): void {
 export function handleItemClaimableUpdated(
   event: ItemClaimableUpdatedEvent
 ): void {
-  let contract = ItemsImplementation.bind(event.address);
-  let game = contract.characterSheets();
+  let game = getGameAddress(event.address);
   let itemId = game
     .toHex()
     .concat("-item-")
@@ -177,7 +147,9 @@ export function handleItemClaimableUpdated(
 
 export function handleNewItemTypeCreated(event: NewItemTypeCreatedEvent): void {
   let contract = ItemsImplementation.bind(event.address);
-  let game = contract.characterSheets();
+
+  let game = getGameAddress(event.address);
+
   let itemId = game
     .toHex()
     .concat("-item-")
@@ -204,7 +176,11 @@ export function handleNewItemTypeCreated(event: NewItemTypeCreatedEvent): void {
 
   entity.save();
 
-  let requirements = contract.getItemRequirements(event.params.itemId);
+  let itemsManagerAddress = contract.itemsManager();
+
+  let itemsManager = ItemsManagerImplementation.bind(itemsManagerAddress);
+
+  let requirements = itemsManager.getItemRequirements(event.params.itemId);
 
   for (let i = 0; i < requirements.length; i++) {
     let requirement = requirements[i];
@@ -230,11 +206,9 @@ export function handleTransferSingle(event: TransferSingleEvent): void {
 
 export function handleURI(event: URIEvent): void {
   let contract = ItemsImplementation.bind(event.address);
-  let game = contract.characterSheets();
-  let itemId = game
-    .toHex()
-    .concat("-item-")
-    .concat(event.params.id.toHex());
+
+  let game = getGameAddress(event.address);
+  let itemId = game.toHex().concat("-item-").concat(event.params.id.toHex());
 
   let entity = Item.load(itemId);
   if (entity == null) {

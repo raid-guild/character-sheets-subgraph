@@ -9,12 +9,24 @@ import {
   ClassesImplementation,
 } from "../generated/templates/ClassesImplementation/ClassesImplementation";
 import { Class, HeldClass } from "../generated/schema";
-import { BigInt, log, store } from "@graphprotocol/graph-ts";
+import { Address, BigInt, log, store } from "@graphprotocol/graph-ts";
 import { CharacterSheetsImplementation } from "../generated/templates/CharacterSheetsImplementation/CharacterSheetsImplementation";
+import { IClonesAddressStorage } from "../generated/templates/ClassesImplementation/IClonesAddressStorage";
+
+function getGameAddress(classesAddress: Address): Address {
+  let contract = ClassesImplementation.bind(classesAddress);
+
+  let clones = contract.clones();
+
+  let clonesStorage = IClonesAddressStorage.bind(clones);
+
+  let game = clonesStorage.characterSheets();
+
+  return game;
+}
 
 export function handleClassAssigned(event: ClassAssignedEvent): void {
-  let contract = ClassesImplementation.bind(event.address);
-  let game = contract.characterSheets();
+  let game = getGameAddress(event.address);
   let classId = game
     .toHex()
     .concat("-class-")
@@ -61,8 +73,7 @@ export function handleClassAssigned(event: ClassAssignedEvent): void {
 }
 
 export function handleClassRevoked(event: ClassRevokedEvent): void {
-  let contract = ClassesImplementation.bind(event.address);
-  let game = contract.characterSheets();
+  let game = getGameAddress(event.address);
 
   let gameContract = CharacterSheetsImplementation.bind(game);
 
@@ -88,8 +99,7 @@ export function handleClassRevoked(event: ClassRevokedEvent): void {
 }
 
 export function handleClassLeveled(event: ClassLeveledEvent): void {
-  let contract = ClassesImplementation.bind(event.address);
-  let game = contract.characterSheets();
+  let game = getGameAddress(event.address);
 
   let gameContract = CharacterSheetsImplementation.bind(game);
 
@@ -116,13 +126,13 @@ export function handleClassLeveled(event: ClassLeveledEvent): void {
     return;
   }
 
-  entity.amount = event.params.newLevel;
+  entity.amount = event.params.newBalance;
   entity.save();
 }
 
 export function handleNewClassCreated(event: NewClassCreatedEvent): void {
   let contract = ClassesImplementation.bind(event.address);
-  let game = contract.characterSheets();
+  let game = getGameAddress(event.address);
   let classId = game
     .toHex()
     .concat("-class-")
@@ -160,11 +170,8 @@ export function handleTransferSingle(event: TransferSingleEvent): void {
 
 export function handleURI(event: URIEvent): void {
   let contract = ClassesImplementation.bind(event.address);
-  let game = contract.characterSheets();
-  let classId = game
-    .toHex()
-    .concat("-class-")
-    .concat(event.params.id.toHex());
+  let game = getGameAddress(event.address);
+  let classId = game.toHex().concat("-class-").concat(event.params.id.toHex());
 
   let entity = Class.load(classId);
   if (entity == null) {

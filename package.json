@@ -5,7 +5,7 @@
     "codegen": "graph codegen",
     "build": "graph build",
     "deploy-sepolia": "graph deploy --studio character-sheets-sepolia",
-    "deploy-goerli": "graph deploy --product=hosted-service dan13ram/character-sheets-goerli-v2",
+    "deploy-goerli": "graph deploy --product=hosted-service dan13ram/character-sheets-goerli",
     "create-local": "graph create --node http://localhost:8020/ dan13ram/character-sheets",
     "remove-local": "graph remove --node http://localhost:8020/ dan13ram/character-sheets",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 dan13ram/character-sheets",

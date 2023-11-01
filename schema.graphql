@@ -8,17 +8,75 @@ type Game @entity {
   classesAddress: Bytes!
   itemsAddress: Bytes!
   experienceAddress: Bytes!
-  eligibilityAdapter: Bytes!
-  classlevelAdapter: Bytes!
+  characterEligibilityAdaptor: Bytes!
+  classLevelAdaptor: Bytes!
+  hatsAdaptor: Bytes!
+  itemsManager: Bytes!
   uri: String!
-  owners: [Bytes!]!
-  masters: [Bytes!]!
+  hatsData: HatsData! @derivedFrom(field: "game")
+  owner: GameOwner! @derivedFrom(field: "game")
+  admins: [GameAdmin!]! @derivedFrom(field: "game")
+  masters: [GameMaster!]! @derivedFrom(field: "game")
   characters: [Character!]! @derivedFrom(field: "game")
   classes: [Class!]! @derivedFrom(field: "game")
   items: [Item!]! @derivedFrom(field: "game")
   experience: BigInt!
-  createdBy: Bytes!
-  createdAt: BigInt!
+  startedBy: Bytes!
+  startedAt: BigInt!
+}
+
+type HatsData @entity {
+  id: ID!
+  game: Game!
+  hatsAdaptor: Bytes!
+  ownerHat: Hat! # top hat
+  adminHat: Hat!
+  gameMasterHat: Hat!
+  playerHat: Hat!
+  characterHat: Hat!
+  owner: GameOwner! @derivedFrom(field: "hatsData")
+  admins: [GameAdmin!]! @derivedFrom(field: "hatsData")
+  masters: [GameMaster!]! @derivedFrom(field: "hatsData")
+}
+
+enum HatType @entity {
+  OWNER
+  ADMIN
+  GAME_MASTER
+  PLAYER
+  CHARACTER
+}
+
+type Hat @entity {
+  id: ID!
+  game: Game!
+  hatsData: HatsData!
+  hatId: BigInt!
+  hatType: HatType!
+}
+
+type GameOwner @entity {
+  id: ID!
+  game: Game!
+  hat: Hat!
+  address: Bytes!
+  hatsData: HatsData!
+}
+
+type GameAdmin @entity {
+  id: ID!
+  game: Game!
+  hat: Hat!
+  address: Bytes!
+  hatsData: HatsData!
+}
+
+type GameMaster @entity {
+  id: ID!
+  game: Game!
+  hat: Hat!
+  address: Bytes!
+  hatsData: HatsData!
 }
 
 type Character @entity {
