@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: CharacterSheetsFactory
-    network: goerli
+    network: {{network}}
     source:
-      address: "0xbF9ED7A8Ee913a4d6e3007421a63C1fe9A8569b8"
+      address: "{{factoryAddress}}"
       abi: CharacterSheetsFactory
-      startBlock: 9973487
+      startBlock: {{blockNumber}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -42,7 +42,7 @@ dataSources:
 templates:
   - kind: ethereum
     name: CharacterSheetsImplementation
-    network: goerli
+    network: {{network}}
     source:
       abi: CharacterSheetsImplementation
     mapping:
@@ -91,7 +91,7 @@ templates:
       file: ./src/character-sheets-implementation.ts
   - kind: ethereum
     name: HatsProtocol
-    network: goerli
+    network: {{network}}
     source:
       abi: HatsProtocol
     mapping:
@@ -126,7 +126,7 @@ templates:
       file: ./src/hats-protocol.ts
   - kind: ethereum
     name: ItemsImplementation
-    network: goerli
+    network: {{network}}
     source:
       abi: ItemsImplementation
     mapping:
@@ -168,7 +168,7 @@ templates:
       file: ./src/items-implementation.ts
   - kind: ethereum
     name: ClassesImplementation
-    network: goerli
+    network: {{network}}
     source:
       abi: ClassesImplementation
     mapping:
@@ -210,7 +210,7 @@ templates:
       file: ./src/classes-implementation.ts
   - kind: ethereum
     name: ExperienceImplementation
-    network: goerli
+    network: {{network}}
     source:
       abi: ExperienceImplementation
     mapping:
