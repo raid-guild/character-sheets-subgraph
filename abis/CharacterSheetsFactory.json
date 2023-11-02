@@ -324,8 +324,14 @@
       "type": "function"
     },
     {
-      "inputs": [],
-      "name": "createCharacterEligibilityAdaptor",
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_dao",
+          "type": "address"
+        }
+      ],
+      "name": "createCharacterEligibilityAdaptorFromDao",
       "outputs": [
         {
           "internalType": "address",

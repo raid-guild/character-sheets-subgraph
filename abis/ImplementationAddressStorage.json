@@ -51,19 +51,6 @@
         {
           "indexed": false,
           "internalType": "address",
-          "name": "newAdaptor",
-          "type": "address"
-        }
-      ],
-      "name": "CharacterEligibilityAdaptorUpdated",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "address",
           "name": "newCharacterModule",
           "type": "address"
         }
@@ -244,6 +231,32 @@
       "anonymous": false,
       "inputs": [
         {
+          "indexed": false,
+          "internalType": "address",
+          "name": "newAdaptor",
+          "type": "address"
+        }
+      ],
+      "name": "MolochV2EligibilityAdaptorUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "newAdaptor",
+          "type": "address"
+        }
+      ],
+      "name": "MolochV3EligibilityAdaptorUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
           "indexed": true,
           "internalType": "address",
           "name": "previousOwner",
@@ -288,19 +301,6 @@
     {
       "inputs": [],
       "name": "adminHatsEligibilityModule",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "characterEligibilityAdaptorImplementation",
       "outputs": [
         {
           "internalType": "address",
@@ -476,7 +476,12 @@
         },
         {
           "internalType": "bytes",
-          "name": "encodedAdaptorsAndMOduleAddresses",
+          "name": "encodedModuleAddresses",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bytes",
+          "name": "encodedAdaptorAddresses",
           "type": "bytes"
         },
         {
@@ -506,6 +511,32 @@
     {
       "inputs": [],
       "name": "itemsManagerImplementation",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "molochV2EligibilityAdaptorImplementation",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "molochV3EligibilityAdaptorImplementation",
       "outputs": [
         {
           "internalType": "address",
@@ -571,19 +602,6 @@
         }
       ],
       "name": "updateAdminHatsEligibilityModule",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "newCharacterEligibilityAdaptor",
-          "type": "address"
-        }
-      ],
-      "name": "updateCharacterEligibilityAdaptorImplementation",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -766,6 +784,32 @@
         }
       ],
       "name": "updateItemsManagerImplementation",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newCharacterEligibilityAdaptor",
+          "type": "address"
+        }
+      ],
+      "name": "updateMolochV2EligibilityAdaptorImplementation",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newCharacterEligibilityAdaptor",
+          "type": "address"
+        }
+      ],
+      "name": "updateMolochV3EligibilityAdaptorImplementation",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
