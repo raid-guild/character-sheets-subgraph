@@ -6,6 +6,19 @@ import {
   ExperienceImplementation,
   Transfer as TransferEvent,
 } from "../generated/templates/ExperienceImplementation/ExperienceImplementation";
+import { IClonesAddressStorage } from "../generated/templates/ExperienceImplementation/IClonesAddressStorage";
+
+function getGameAddress(experienceAddress: Address): Address {
+  let contract = ExperienceImplementation.bind(experienceAddress);
+
+  let clones = contract.clones();
+
+  let clonesStorage = IClonesAddressStorage.bind(clones);
+
+  let game = clonesStorage.characterSheets();
+
+  return game;
+}
 
 export function handleTransfer(event: TransferEvent): void {
   if (
@@ -16,8 +29,7 @@ export function handleTransfer(event: TransferEvent): void {
     return;
   }
 
-  let contract = ExperienceImplementation.bind(event.address);
-  let game = contract.characterSheets();
+  let game = getGameAddress(event.address);
 
   let gameContract = CharacterSheetsImplementation.bind(game);
 

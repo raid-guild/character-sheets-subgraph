@@ -4,8 +4,12 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy-sepolia": "graph deploy --studio character-sheets-sepolia",
-    "deploy-goerli": "graph deploy --product=hosted-service dan13ram/character-sheets-goerli-v2",
+    "prepare-goerli": "mustache config/goerli.json subgraph.template.yaml > subgraph.yaml",
+    "deploy-only-goerli": "graph deploy --product=hosted-service dan13ram/character-sheets-goerli",
+    "deploy-goerli": "yarn prepare-goerli && yarn codegen && yarn build && yarn deploy-pnly-goerli",
+    "prepare-gnosis": "mustache config/gnosis.json subgraph.template.yaml > subgraph.yaml",
+    "deploy-only-gnosis": "graph deploy --product=hosted-service dan13ram/character-sheets-gnosis",
+    "deploy-gnosis": "yarn prepare-gnosis && yarn codegen && yarn build && yarn deploy-pnly-gnosis",
     "create-local": "graph create --node http://localhost:8020/ dan13ram/character-sheets",
     "remove-local": "graph remove --node http://localhost:8020/ dan13ram/character-sheets",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 dan13ram/character-sheets",
@@ -16,6 +20,7 @@
     "@graphprotocol/graph-ts": "0.31.0"
   },
   "devDependencies": {
-    "matchstick-as": "0.5.2"
+    "matchstick-as": "0.5.2",
+    "mustache": "^4.2.0"
   }
 }

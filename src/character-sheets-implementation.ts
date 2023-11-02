@@ -8,8 +8,6 @@ import {
   CharacterUpdated as CharacterUpdatedEvent,
   PlayerJailed as PlayerJailedEvent,
   CharacterRestored as CharacterRestoredEvent,
-  RoleGranted as RoleGrantedEvent,
-  RoleRevoked as RoleRevokedEvent,
   Transfer as TransferEvent,
   CharacterSheetsImplementation,
 } from "../generated/templates/CharacterSheetsImplementation/CharacterSheetsImplementation";
@@ -185,60 +183,6 @@ export function handlePlayerJailed(event: PlayerJailedEvent): void {
 
   character.jailed = isJailed;
   character.save();
-}
-
-export function handleRoleGranted(event: RoleGrantedEvent): void {
-  let entity = Game.load(event.address.toHex());
-
-  if (entity == null) {
-    return;
-  }
-
-  let contract = CharacterSheetsImplementation.bind(event.address);
-  let DEFAULT_ADMIN_ROLE = contract.DEFAULT_ADMIN_ROLE();
-  let DUNGEON_MASTER = contract.DUNGEON_MASTER();
-
-  if (event.params.role == DEFAULT_ADMIN_ROLE) {
-    let owners = entity.owners;
-    owners.push(event.params.account);
-    entity.owners = owners;
-  } else if (event.params.role == DUNGEON_MASTER) {
-    let masters = entity.masters;
-    masters.push(event.params.account);
-    entity.masters = masters;
-  }
-
-  entity.save();
-}
-
-export function handleRoleRevoked(event: RoleRevokedEvent): void {
-  let entity = Game.load(event.address.toHex());
-
-  if (entity == null) {
-    return;
-  }
-
-  let contract = CharacterSheetsImplementation.bind(event.address);
-  let DEFAULT_ADMIN_ROLE = contract.DEFAULT_ADMIN_ROLE();
-  let DUNGEON_MASTER = contract.DUNGEON_MASTER();
-
-  if (event.params.role == DEFAULT_ADMIN_ROLE) {
-    let owners = entity.owners;
-    let index = owners.indexOf(event.params.account);
-    if (index > -1) {
-      owners.splice(index, 1);
-    }
-    entity.owners = owners;
-  } else if (event.params.role == DUNGEON_MASTER) {
-    let masters = entity.masters;
-    let index = masters.indexOf(event.params.account);
-    if (index > -1) {
-      masters.splice(index, 1);
-    }
-    entity.masters = masters;
-  }
-
-  entity.save();
 }
 
 export function handleApproval(event: ApprovalEvent): void {
