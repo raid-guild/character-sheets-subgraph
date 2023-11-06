@@ -32,6 +32,7 @@ import {
 } from "../generated/templates";
 
 import { CharacterSheetsImplementation as CharacterSheetsContract } from "../generated/templates/CharacterSheetsImplementation/CharacterSheetsImplementation";
+import {getChainId} from "./helpers/network";
 
 // Adapted from https://ethereum.stackexchange.com/questions/114582/the-graph-nodes-cant-decode-abi-encoded-data-containing-arrays
 // Wrap arguments with this function if (and only if) one of the arguments is an array.
@@ -78,6 +79,7 @@ export function handleNewGameStarted(event: NewGameStartedEvent): void {
   entity.classLevelAdaptor = clonesStorage.classLevelAdaptor();
   entity.hatsAdaptor = hatsAdaptorAddress;
   entity.itemsManager = clonesStorage.itemsManager();
+  entity.chainId = getChainId();
 
   entity.startedBy = event.params.starter;
   entity.startedAt = event.block.timestamp;
