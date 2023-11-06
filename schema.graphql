@@ -5,6 +5,7 @@ type Global @entity {
 
 type Game @entity {
   id: ID!
+  chainId: BigInt!
   classesAddress: Bytes!
   itemsAddress: Bytes!
   experienceAddress: Bytes!
