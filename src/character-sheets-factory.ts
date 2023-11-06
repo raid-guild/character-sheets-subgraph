@@ -143,6 +143,38 @@ function setupHatsData(
   return hatsData;
 }
 
+export function hatIdToHex(hatId: BigInt): string {
+  return "0x" + hatId.toHexString().slice(2).padStart(64, "0");
+}
+
+export function hatIdToPrettyIdHex(hatId: BigInt): string {
+  let hexId = hatIdToHex(hatId);
+  let prettyId = hexId.substring(0, 10);
+  for (let i = 10; i < hexId.length; i += 4) {
+    let domainAtLevel = hexId.substring(i, i + 4);
+    if (domainAtLevel == "0000") {
+      break;
+    }
+    prettyId += "." + domainAtLevel;
+  }
+  return prettyId;
+}
+
+export function hatIdToPrettyId(hatId: BigInt): string {
+  let hexId = hatIdToHex(hatId);
+  let prettyIdHex = hexId.substring(0, 10);
+  let prettyId = U64.parseInt(prettyIdHex, 16).toString();
+  for (let i = 10; i < hexId.length; i += 4) {
+    let domainAtLevel = hexId.substring(i, i + 4);
+    if (domainAtLevel == "0000") {
+      break;
+    }
+    let domainAtLevelHex = "0x" + domainAtLevel;
+    prettyId += "." + U64.parseInt(domainAtLevelHex, 16).toString();
+  }
+  return prettyId;
+}
+
 function newHat(
   hatsDataId: string,
   gameId: string,
@@ -155,8 +187,13 @@ function newHat(
 
   hat.hatsData = hatsDataId;
   hat.game = gameId;
-  hat.hatId = hatId;
+  hat.hatId = hatId.toString();
+  hat.hatIdHex = hatIdToHex(hatId);
+  hat.prettyIdHex = hatIdToPrettyIdHex(hatId);
+  hat.prettyId = hatIdToPrettyId(hatId);
   hat.hatType = hatType;
+
+  hat.save();
 
   return id;
 }

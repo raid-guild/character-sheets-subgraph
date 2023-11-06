@@ -6,21 +6,21 @@
     "build": "graph build",
     "prepare-goerli": "mustache config/goerli.json subgraph.template.yaml > subgraph.yaml",
     "deploy-only-goerli": "graph deploy --product=hosted-service dan13ram/character-sheets-goerli",
-    "deploy-goerli": "yarn prepare-goerli && yarn codegen && yarn build && yarn deploy-pnly-goerli",
+    "deploy-goerli": "yarn prepare-goerli && yarn codegen && yarn build && yarn deploy-only-goerli",
     "prepare-gnosis": "mustache config/gnosis.json subgraph.template.yaml > subgraph.yaml",
     "deploy-only-gnosis": "graph deploy --product=hosted-service dan13ram/character-sheets-gnosis",
-    "deploy-gnosis": "yarn prepare-gnosis && yarn codegen && yarn build && yarn deploy-pnly-gnosis",
+    "deploy-gnosis": "yarn prepare-gnosis && yarn codegen && yarn build && yarn deploy-only-gnosis",
     "create-local": "graph create --node http://localhost:8020/ dan13ram/character-sheets",
     "remove-local": "graph remove --node http://localhost:8020/ dan13ram/character-sheets",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 dan13ram/character-sheets",
     "test": "graph test"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "0.56.0",
+    "@graphprotocol/graph-cli": "0.60.0",
     "@graphprotocol/graph-ts": "0.31.0"
   },
   "devDependencies": {
-    "matchstick-as": "0.5.2",
+    "matchstick-as": "0.6.0",
     "mustache": "^4.2.0"
   }
 }

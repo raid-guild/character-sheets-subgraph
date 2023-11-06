@@ -51,7 +51,10 @@ type Hat @entity {
   id: ID!
   game: Game!
   hatsData: HatsData!
-  hatId: BigInt!
+  hatId: String!
+  hatIdHex: String!
+  prettyIdHex: String!
+  prettyId: String!
   hatType: HatType!
 }
 
