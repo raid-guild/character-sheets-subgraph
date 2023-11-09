@@ -30,6 +30,10 @@ type HatsData @entity {
   id: ID!
   game: Game!
   hatsAdaptor: Bytes!
+  adminHatEligibilityModule: Bytes!
+  gameMasterHatEligibilityModule: Bytes!
+  playerHatEligibilityModule: Bytes!
+  characterHatEligibilityModule: Bytes!
   ownerHat: Hat! # top hat
   adminHat: Hat!
   gameMasterHat: Hat!

@@ -32,7 +32,7 @@ import {
 } from "../generated/templates";
 
 import { CharacterSheetsImplementation as CharacterSheetsContract } from "../generated/templates/CharacterSheetsImplementation/CharacterSheetsImplementation";
-import {getChainId} from "./helpers/network";
+import { getChainId } from "./helpers/network";
 
 // Adapted from https://ethereum.stackexchange.com/questions/114582/the-graph-nodes-cant-decode-abi-encoded-data-containing-arrays
 // Wrap arguments with this function if (and only if) one of the arguments is an array.
@@ -74,8 +74,7 @@ export function handleNewGameStarted(event: NewGameStartedEvent): void {
   entity.classesAddress = classesAddress;
   entity.itemsAddress = itemsAddress;
   entity.experienceAddress = experienceAddress;
-  entity.characterEligibilityAdaptor =
-    clonesStorage.characterEligibilityAdaptor();
+  entity.characterEligibilityAdaptor = clonesStorage.characterEligibilityAdaptor();
   entity.classLevelAdaptor = clonesStorage.classLevelAdaptor();
   entity.hatsAdaptor = hatsAdaptorAddress;
   entity.itemsManager = clonesStorage.itemsManager();
@@ -122,6 +121,17 @@ function setupHatsData(
   hatsData.game = gameAddress.toHex();
 
   let hatsAdaptor = HatsAdaptor.bind(hatsAdaptorAddress);
+
+  let adminHatEligibilityModule = hatsAdaptor.adminHatEligibilityModule();
+  let gameMasterHatEligibilityModule = hatsAdaptor.gameMasterHatEligibilityModule();
+  let playerHatEligibilityModule = hatsAdaptor.playerHatEligibilityModule();
+  let characterHatEligibilityModule = hatsAdaptor.characterHatEligibilityModule();
+
+  hatsData.adminHatEligibilityModule = adminHatEligibilityModule;
+  hatsData.gameMasterHatEligibilityModule = gameMasterHatEligibilityModule;
+  hatsData.playerHatEligibilityModule = playerHatEligibilityModule;
+  hatsData.characterHatEligibilityModule = characterHatEligibilityModule;
+
   let data = hatsAdaptor.getHatsData();
 
   hatsData.ownerHat = newHat(hatsDataId, gameId, data.topHatId, "OWNER");
@@ -146,7 +156,13 @@ function setupHatsData(
 }
 
 export function hatIdToHex(hatId: BigInt): string {
-  return "0x" + hatId.toHexString().slice(2).padStart(64, "0");
+  return (
+    "0x" +
+    hatId
+      .toHexString()
+      .slice(2)
+      .padStart(64, "0")
+  );
 }
 
 export function hatIdToPrettyIdHex(hatId: BigInt): string {
