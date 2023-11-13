@@ -155,8 +155,6 @@ templates:
       eventHandlers:
         - event: NewItemTypeCreated(uint256)
           handler: handleNewItemTypeCreated
-        - event: ItemTransfered(address,uint256,uint256)
-          handler: handleItemTransfered
         - event: ItemClaimableUpdated(uint256,bytes32,uint256)
           handler: handleItemClaimableUpdated
         - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
