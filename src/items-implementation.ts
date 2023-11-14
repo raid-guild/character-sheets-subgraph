@@ -19,12 +19,9 @@ function _newItemRequirement(
   assetCategory: number,
   assetAddress: Address,
   assetIdBG: BigInt,
-  amountBG: BigInt
+  amountBG: BigInt,
 ): void {
-  let itemId = gameAddress
-    .toHex()
-    .concat("-item-")
-    .concat(itemIdBG.toHex());
+  let itemId = gameAddress.toHex().concat("-item-").concat(itemIdBG.toHex());
 
   let assetId = assetAddress
     .toHex()
@@ -73,7 +70,7 @@ function getGameAddress(itemsAddress: Address): Address {
 }
 
 export function handleItemClaimableUpdated(
-  event: ItemClaimableUpdatedEvent
+  event: ItemClaimableUpdatedEvent,
 ): void {
   let game = getGameAddress(event.address);
   let itemId = game
@@ -136,7 +133,7 @@ export function handleNewItemTypeCreated(event: NewItemTypeCreatedEvent): void {
       requirement.category,
       requirement.assetAddress,
       requirement.id,
-      requirement.amount
+      requirement.amount,
     );
   }
 }
@@ -148,10 +145,7 @@ export function handleTransferBatch(event: TransferBatchEvent): void {
 export function handleTransferSingle(event: TransferSingleEvent): void {
   let game = getGameAddress(event.address);
 
-  let itemId = game
-    .toHex()
-    .concat("-item-")
-    .concat(event.params.id.toHex());
+  let itemId = game.toHex().concat("-item-").concat(event.params.id.toHex());
 
   let itemEntity = Item.load(itemId);
   if (itemEntity == null) {
@@ -166,48 +160,96 @@ export function handleTransferSingle(event: TransferSingleEvent): void {
 
   let gameContract = CharacterSheetsImplementation.bind(game);
 
-  let result = gameContract.try_getCharacterIdByAccountAddress(event.params.to);
+  {
+    let result = gameContract.try_getCharacterIdByAccountAddress(
+      event.params.to,
+    );
 
-  if (result.reverted) {
-    log.error("ItemTransfered: getCharacterIdByAccountAddress reverted", []);
-    return;
+    if (result.reverted) {
+      log.error(
+        "TransferSingle: getCharacterIdByAccountAddress reverted for to",
+        [],
+      );
+      return;
+    }
+
+    let characterId = game
+      .toHex()
+      .concat("-character-")
+      .concat(result.value.toHex());
+
+    let heldItemId = game
+      .toHex()
+      .concat("-item-")
+      .concat(event.params.id.toHex())
+      .concat("-held-by-")
+      .concat(result.value.toHex());
+
+    let entity = HeldItem.load(heldItemId);
+    if (entity == null) {
+      entity = new HeldItem(heldItemId);
+      entity.amount = BigInt.fromI32(0);
+    }
+
+    entity.item = itemId;
+    entity.character = characterId;
+    let amount = entity.amount;
+    amount = amount.plus(event.params.value);
+    entity.amount = amount;
+
+    entity.save();
   }
 
-  let characterId = game
-    .toHex()
-    .concat("-character-")
-    .concat(result.value.toHex());
+  {
+    let result = gameContract.try_getCharacterIdByAccountAddress(
+      event.params.from,
+    );
 
-  let heldItemId = game
-    .toHex()
-    .concat("-item-")
-    .concat(event.params.id.toHex())
-    .concat("-held-by-")
-    .concat(result.value.toHex());
+    if (result.reverted) {
+      log.error(
+        "TransferSingle: getCharacterIdByAccountAddress reverted for from",
+        [],
+      );
+      return;
+    }
 
-  let entity = HeldItem.load(heldItemId);
-  if (entity == null) {
-    entity = new HeldItem(heldItemId);
-    entity.amount = BigInt.fromI32(0);
+    let characterId = game
+      .toHex()
+      .concat("-character-")
+      .concat(result.value.toHex());
+
+    let heldItemId = game
+      .toHex()
+      .concat("-item-")
+      .concat(event.params.id.toHex())
+      .concat("-held-by-")
+      .concat(result.value.toHex());
+
+    let entity = HeldItem.load(heldItemId);
+    if (entity == null) {
+      entity = new HeldItem(heldItemId);
+      entity.amount = BigInt.fromI32(0);
+    }
+
+    entity.item = itemId;
+    entity.character = characterId;
+    let amount = entity.amount;
+    if (amount.lt(event.params.value)) {
+      log.error("TransferSingle: amount is less than value", []);
+      return;
+    }
+    amount = amount.minus(event.params.value);
+    entity.amount = amount;
+
+    entity.save();
   }
-
-  entity.item = itemId;
-  entity.character = characterId;
-  let amount = entity.amount;
-  amount = amount.plus(event.params.value);
-  entity.amount = amount;
-
-  entity.save();
 }
 
 export function handleURI(event: URIEvent): void {
   let contract = ItemsImplementation.bind(event.address);
 
   let game = getGameAddress(event.address);
-  let itemId = game
-    .toHex()
-    .concat("-item-")
-    .concat(event.params.id.toHex());
+  let itemId = game.toHex().concat("-item-").concat(event.params.id.toHex());
 
   let entity = Item.load(itemId);
   if (entity == null) {
