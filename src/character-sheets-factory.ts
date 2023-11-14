@@ -83,6 +83,7 @@ export function handleNewGameStarted(event: NewGameStartedEvent): void {
   entity.startedBy = event.params.starter;
   entity.startedAt = event.block.timestamp;
   entity.uri = "";
+  entity.baseTokenURI = "";
   entity.experience = BigInt.fromI32(0);
   entity.save();
 
@@ -95,6 +96,11 @@ export function handleNewGameStarted(event: NewGameStartedEvent): void {
   let uriResult = contract.try_metadataURI();
   if (!uriResult.reverted) {
     entity.uri = uriResult.value;
+  }
+
+  let baseTokenURIResult = contract.try_baseTokenURI();
+  if (!baseTokenURIResult.reverted) {
+    entity.baseTokenURI = baseTokenURIResult.value;
   }
 
   let hatsData = setupHatsData(gameAddress.value, hatsAdaptorAddress);

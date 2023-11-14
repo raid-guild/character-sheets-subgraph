@@ -14,6 +14,7 @@ type Game @entity {
   hatsAdaptor: Bytes!
   itemsManager: Bytes!
   uri: String!
+  baseTokenURI: String!
   hatsData: HatsData! @derivedFrom(field: "game")
   owner: GameOwner! @derivedFrom(field: "game")
   admins: [GameAdmin!]! @derivedFrom(field: "game")

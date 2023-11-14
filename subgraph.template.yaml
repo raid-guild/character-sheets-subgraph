@@ -70,6 +70,8 @@ templates:
       eventHandlers:
         - event: Approval(indexed address,indexed address,indexed uint256)
           handler: handleApproval
+        - event: BaseURIUpdated(string)
+          handler: handleBaseURIUpdated
         - event: NewCharacterSheetRolled(address,address,uint256)
           handler: handleNewCharacterSheetRolled
         - event: MetadataURIUpdated(string)
