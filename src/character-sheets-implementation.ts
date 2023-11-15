@@ -1,5 +1,6 @@
 import {
   Approval as ApprovalEvent,
+  BaseURIUpdated as BaseURIUpdatedEvent,
   NewCharacterSheetRolled as NewCharacterSheetRolledEvent,
   MetadataURIUpdated as MetadataURIUpdatedEvent,
   CharacterRemoved as CharacterRemovedEvent,
@@ -13,6 +14,52 @@ import {
 } from "../generated/templates/CharacterSheetsImplementation/CharacterSheetsImplementation";
 import { Character, Game, EquippedItem } from "../generated/schema";
 import { Address, log, BigInt, store } from "@graphprotocol/graph-ts";
+
+export function handleBaseURIUpdated(event: BaseURIUpdatedEvent): void {
+  let game = Game.load(event.address.toHex());
+  if (game == null) {
+    log.error("BaseURIUpdated: game {} not found", [event.address.toHex()]);
+    return;
+  }
+
+  game.baseTokenURI = event.params.newURI;
+  game.save();
+
+  let contract = CharacterSheetsImplementation.bind(event.address);
+  let result = contract.try_totalSheets();
+  if (result.reverted) {
+    log.error("BaseURIUpdated: totalSheets reverted", []);
+    return;
+  }
+
+  let totalSheets = result.value;
+
+  for (
+    let i = BigInt.fromI32(0);
+    i.lt(totalSheets);
+    i = i.plus(BigInt.fromI32(1))
+  ) {
+    let characterId = event.address
+      .toHex()
+      .concat("-character-")
+      .concat(i.toHex());
+
+    let character = Character.load(characterId);
+    if (character == null) {
+      log.error("BaseURIUpdated: character {} not found", [characterId]);
+      continue;
+    }
+
+    let result = contract.try_tokenURI(i);
+    if (result.reverted) {
+      log.error("BaseURIUpdated: tokenURI reverted", []);
+      continue;
+    }
+
+    character.uri = result.value;
+    character.save();
+  }
+}
 
 export function handleCharacterUpdated(event: CharacterUpdatedEvent): void {
   let characterId = event.address
