@@ -19,9 +19,12 @@ function _newItemRequirement(
   assetCategory: number,
   assetAddress: Address,
   assetIdBG: BigInt,
-  amountBG: BigInt,
+  amountBG: BigInt
 ): void {
-  let itemId = gameAddress.toHex().concat("-item-").concat(itemIdBG.toHex());
+  let itemId = gameAddress
+    .toHex()
+    .concat("-item-")
+    .concat(itemIdBG.toHex());
 
   let assetId = assetAddress
     .toHex()
@@ -70,7 +73,7 @@ function getGameAddress(itemsAddress: Address): Address {
 }
 
 export function handleItemClaimableUpdated(
-  event: ItemClaimableUpdatedEvent,
+  event: ItemClaimableUpdatedEvent
 ): void {
   let game = getGameAddress(event.address);
   let itemId = game
@@ -133,7 +136,7 @@ export function handleNewItemTypeCreated(event: NewItemTypeCreatedEvent): void {
       requirement.category,
       requirement.assetAddress,
       requirement.id,
-      requirement.amount,
+      requirement.amount
     );
   }
 }
@@ -145,7 +148,10 @@ export function handleTransferBatch(event: TransferBatchEvent): void {
 export function handleTransferSingle(event: TransferSingleEvent): void {
   let game = getGameAddress(event.address);
 
-  let itemId = game.toHex().concat("-item-").concat(event.params.id.toHex());
+  let itemId = game
+    .toHex()
+    .concat("-item-")
+    .concat(event.params.id.toHex());
 
   let itemEntity = Item.load(itemId);
   if (itemEntity == null) {
@@ -162,13 +168,13 @@ export function handleTransferSingle(event: TransferSingleEvent): void {
 
   {
     let result = gameContract.try_getCharacterIdByAccountAddress(
-      event.params.to,
+      event.params.to
     );
 
     if (result.reverted) {
       log.error(
         "TransferSingle: getCharacterIdByAccountAddress reverted for to",
-        [],
+        []
       );
       return;
     }
@@ -201,14 +207,21 @@ export function handleTransferSingle(event: TransferSingleEvent): void {
   }
 
   {
+    if (
+      event.params.from ==
+        Address.fromHexString("0x0000000000000000000000000000000000000000") ||
+      event.params.from == event.address
+    ) {
+      return;
+    }
     let result = gameContract.try_getCharacterIdByAccountAddress(
-      event.params.from,
+      event.params.from
     );
 
     if (result.reverted) {
       log.error(
         "TransferSingle: getCharacterIdByAccountAddress reverted for from",
-        [],
+        []
       );
       return;
     }
@@ -249,7 +262,10 @@ export function handleURI(event: URIEvent): void {
   let contract = ItemsImplementation.bind(event.address);
 
   let game = getGameAddress(event.address);
-  let itemId = game.toHex().concat("-item-").concat(event.params.id.toHex());
+  let itemId = game
+    .toHex()
+    .concat("-item-")
+    .concat(event.params.id.toHex());
 
   let entity = Item.load(itemId);
   if (entity == null) {
