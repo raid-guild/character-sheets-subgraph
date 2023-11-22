@@ -170,4 +170,5 @@ type EquippedItem @entity {
   character: Character!
   item: Item!
   heldItem: HeldItem!
+  equippedAt: BigInt!
 }
