@@ -115,6 +115,7 @@ export function handleItemEquipped(event: ItemEquippedEvent): void {
   equippedItem.character = characterId;
   equippedItem.item = itemId;
   equippedItem.heldItem = heldItemId;
+  equippedItem.equippedAt = event.block.timestamp;
   equippedItem.save();
 }
 
