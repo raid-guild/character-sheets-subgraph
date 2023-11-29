@@ -41,6 +41,51 @@ dataSources:
       file: ./src/character-sheets-factory.ts
 templates:
   - kind: ethereum
+    name: ImplementationAddressStorage
+    network: {{network}}
+    source:
+      abi: ImplementationAddressStorage
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - ImplementationContracts
+        - Global
+        - Game
+        - Character
+        - Item
+        - Class
+      abis:
+        - name: CharacterSheetsFactory
+          file: ./abis/CharacterSheetsFactory.json
+        - name: ImplementationAddressStorage
+          file: ./abis/ImplementationAddressStorage.json
+        - name: CharacterSheetsImplementation
+          file: ./abis/CharacterSheetsImplementation.json
+        - name: ClassesImplementation
+          file: ./abis/ClassesImplementation.json
+        - name: ItemsImplementation
+          file: ./abis/ItemsImplementation.json
+        - name: ExperienceImplementation
+          file: ./abis/ExperienceImplementation.json
+        - name: IClonesAddressStorage
+          file: ./abis/IClonesAddressStorage.json
+      eventHandlers:
+        - event: CharacterSheetsUpdated(address)
+          handler: handleCharacterSheetsUpdated
+        - event: ExperienceUpdated(address)
+          handler: handleExperienceUpdated
+        - event: ItemsUpdated(address)
+          handler: handleItemsUpdated
+        - event: ClassesImplementationUpdated(address)
+          handler: handleClassesImplementationUpdated
+        - event: ItemsManagerUpdated(address)
+          handler: handleItemsManagerUpdated
+        - event: HatsAdaptorUpdated(address)
+          handler: handleHatsAdaptorUpdated
+      file: ./src/implementation-address-storage.ts
+  - kind: ethereum
     name: CharacterSheetsImplementation
     network: {{network}}
     source:

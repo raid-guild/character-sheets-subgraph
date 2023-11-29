@@ -22,6 +22,7 @@ import {
   Global,
   Hat,
   HatsData,
+  ImplementationContracts,
 } from "../generated/schema";
 import {
   CharacterSheetsImplementation as CharacterSheetsTemplate,
@@ -29,6 +30,7 @@ import {
   ItemsImplementation as ItemsTemplate,
   ExperienceImplementation as ExperienceTemplate,
   HatsProtocol as HatsProtocolTemplate,
+  ImplementationAddressStorage as ImplementationAddressStorageTemplate,
 } from "../generated/templates";
 
 import { CharacterSheetsImplementation as CharacterSheetsContract } from "../generated/templates/CharacterSheetsImplementation/CharacterSheetsImplementation";
@@ -71,10 +73,12 @@ export function handleNewGameStarted(event: NewGameStartedEvent): void {
 
   let entity = new Game(gameAddress.value.toHex());
 
+  entity.clonesAddress = clonesStorageAddress;
   entity.classesAddress = classesAddress;
   entity.itemsAddress = itemsAddress;
   entity.experienceAddress = experienceAddress;
-  entity.characterEligibilityAdaptor = clonesStorage.characterEligibilityAdaptor();
+  entity.characterEligibilityAdaptor =
+    clonesStorage.characterEligibilityAdaptor();
   entity.classLevelAdaptor = clonesStorage.classLevelAdaptor();
   entity.hatsAdaptor = hatsAdaptorAddress;
   entity.itemsManager = clonesStorage.itemsManager();
@@ -85,7 +89,6 @@ export function handleNewGameStarted(event: NewGameStartedEvent): void {
   entity.uri = "";
   entity.baseTokenURI = "";
   entity.experience = BigInt.fromI32(0);
-  entity.save();
 
   CharacterSheetsTemplate.create(gameAddress.value);
   ClassesTemplate.create(classesAddress);
@@ -129,9 +132,11 @@ function setupHatsData(
   let hatsAdaptor = HatsAdaptor.bind(hatsAdaptorAddress);
 
   let adminHatEligibilityModule = hatsAdaptor.adminHatEligibilityModule();
-  let gameMasterHatEligibilityModule = hatsAdaptor.gameMasterHatEligibilityModule();
+  let gameMasterHatEligibilityModule =
+    hatsAdaptor.gameMasterHatEligibilityModule();
   let playerHatEligibilityModule = hatsAdaptor.playerHatEligibilityModule();
-  let characterHatEligibilityModule = hatsAdaptor.characterHatEligibilityModule();
+  let characterHatEligibilityModule =
+    hatsAdaptor.characterHatEligibilityModule();
 
   hatsData.adminHatEligibilityModule = adminHatEligibilityModule;
   hatsData.gameMasterHatEligibilityModule = gameMasterHatEligibilityModule;
@@ -162,13 +167,7 @@ function setupHatsData(
 }
 
 export function hatIdToHex(hatId: BigInt): string {
-  return (
-    "0x" +
-    hatId
-      .toHexString()
-      .slice(2)
-      .padStart(64, "0")
-  );
+  return "0x" + hatId.toHexString().slice(2).padStart(64, "0");
 }
 
 export function hatIdToPrettyIdHex(hatId: BigInt): string {
@@ -296,5 +295,28 @@ export function handleInitialized(event: InitializedEvent): void {
 
   HatsProtocolTemplate.create(hatsContractAddress);
 
+  let implementations = new ImplementationContracts(
+    dataSource.network().toString()
+  );
+
+  implementations.characterSheetsImplementation =
+    implementationsStorage.characterSheetsImplementation();
+  implementations.experienceImplementation =
+    implementationsStorage.experienceImplementation();
+  implementations.itemsImplementation =
+    implementationsStorage.itemsImplementation();
+  implementations.itemsManagerImplementation =
+    implementationsStorage.itemsManagerImplementation();
+  implementations.classesImplementation =
+    implementationsStorage.classesImplementation();
+  implementations.hatsAdaptorImplementation =
+    implementationsStorage.hatsAdaptorImplementation();
+
+  implementations.save();
+
+  entity.implementationStorage = implementationAddress;
+  entity.implementations = implementations.id;
   entity.save();
+
+  ImplementationAddressStorageTemplate.create(implementationAddress);
 }

@@ -1,11 +1,24 @@
 type Global @entity {
   id: ID!
   gameFactory: Bytes!
+  implementationStorage: Bytes!
+  implementations: ImplementationContracts!
+}
+
+type ImplementationContracts @entity {
+  id: ID!
+  characterSheetsImplementation: Bytes!
+  experienceImplementation: Bytes!
+  itemsImplementation: Bytes!
+  itemsManagerImplementation: Bytes!
+  classesImplementation: Bytes!
+  hatsAdaptorImplementation: Bytes!
 }
 
 type Game @entity {
   id: ID!
   chainId: BigInt!
+  clonesAddress: Bytes!
   classesAddress: Bytes!
   itemsAddress: Bytes!
   experienceAddress: Bytes!
