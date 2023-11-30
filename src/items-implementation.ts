@@ -87,6 +87,7 @@ export function handleItemClaimableUpdated(
   }
 
   entity.merkleRoot = event.params.merkleRoot;
+  entity.distribution = event.params.newDistribution;
   entity.save();
 }
 
@@ -118,6 +119,7 @@ export function handleNewItemTypeCreated(event: NewItemTypeCreatedEvent): void {
   entity.supply = item.supply;
   entity.supplied = item.supplied;
   entity.totalSupply = item.supply;
+  entity.distribution = item.distribution;
 
   entity.save();
 

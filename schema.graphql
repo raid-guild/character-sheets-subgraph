@@ -136,6 +136,7 @@ type Item @entity {
   soulbound: Boolean!
   supply: BigInt!
   supplied: BigInt!
+  distribution: BigInt!
   totalSupply: BigInt!
   merkleRoot: Bytes!
   requirements: [ItemRequirement!]! @derivedFrom(field: "item")
