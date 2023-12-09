@@ -8,7 +8,8 @@ import {
   URI as URIEvent,
   ClassesImplementation,
 } from "../generated/templates/ClassesImplementation/ClassesImplementation";
-import { Class, HeldClass } from "../generated/schema";
+import { ClassLevelAdaptor } from "../generated/templates/ClassesImplementation/ClassLevelAdaptor";
+import { Class, Game, HeldClass } from "../generated/schema";
 import { Address, BigInt, log, store } from "@graphprotocol/graph-ts";
 import { CharacterSheetsImplementation } from "../generated/templates/CharacterSheetsImplementation/CharacterSheetsImplementation";
 import { IClonesAddressStorage } from "../generated/templates/ClassesImplementation/IClonesAddressStorage";
@@ -61,6 +62,27 @@ export function handleClassAssigned(event: ClassAssignedEvent): void {
   if (entity == null) {
     entity = new HeldClass(heldClassId);
     entity.amount = BigInt.fromI32(0);
+    let gameEntity = Game.load(game.toHex());
+
+    if (gameEntity == null) {
+      log.error("ClassAssigned: game not found", []);
+      return;
+    }
+
+    let classLevelAdaptor = gameEntity.classLevelAdaptor;
+    let classLevelAdaptorContract = ClassLevelAdaptor.bind(
+      changetype<Address>(classLevelAdaptor)
+    );
+    let xpForNextLevel = classLevelAdaptorContract.try_getExperienceForNextLevel(
+      BigInt.fromI32(1)
+    );
+
+    if (xpForNextLevel.reverted) {
+      log.error("ClassAssigned: experience for next level not found", []);
+      return;
+    }
+
+    entity.xpForNextLevel = xpForNextLevel.value;
   }
 
   entity.classEntity = classId;
@@ -127,6 +149,25 @@ export function handleClassLeveled(event: ClassLeveledEvent): void {
   }
 
   entity.amount = event.params.newBalance;
+
+  let gameEntity = Game.load(game.toHex());
+  if (gameEntity == null) {
+    log.error("ClassLeveled: game not found", []);
+    return;
+  }
+
+  let classLevelAdaptorContract = ClassLevelAdaptor.bind(
+    changetype<Address>(gameEntity.classLevelAdaptor)
+  );
+  let xpForNextLevel = classLevelAdaptorContract.try_getExperienceForNextLevel(
+    BigInt.fromI32(event.params.newBalance.toI32())
+  );
+  if (xpForNextLevel.reverted) {
+    log.error("ClassLeveled: experience for next level not found", []);
+    return;
+  }
+
+  entity.xpForNextLevel = xpForNextLevel.value;
   entity.save();
 }
 
@@ -171,7 +212,10 @@ export function handleTransferSingle(event: TransferSingleEvent): void {
 export function handleURI(event: URIEvent): void {
   let contract = ClassesImplementation.bind(event.address);
   let game = getGameAddress(event.address);
-  let classId = game.toHex().concat("-class-").concat(event.params.id.toHex());
+  let classId = game
+    .toHex()
+    .concat("-class-")
+    .concat(event.params.id.toHex());
 
   let entity = Class.load(classId);
   if (entity == null) {
