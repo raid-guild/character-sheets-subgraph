@@ -77,8 +77,7 @@ export function handleNewGameStarted(event: NewGameStartedEvent): void {
   entity.classesAddress = classesAddress;
   entity.itemsAddress = itemsAddress;
   entity.experienceAddress = experienceAddress;
-  entity.characterEligibilityAdaptor =
-    clonesStorage.characterEligibilityAdaptor();
+  entity.characterEligibilityAdaptor = clonesStorage.characterEligibilityAdaptor();
   entity.classLevelAdaptor = clonesStorage.classLevelAdaptor();
   entity.hatsAdaptor = hatsAdaptorAddress;
   entity.itemsManager = clonesStorage.itemsManager();
@@ -132,11 +131,9 @@ function setupHatsData(
   let hatsAdaptor = HatsAdaptor.bind(hatsAdaptorAddress);
 
   let adminHatEligibilityModule = hatsAdaptor.adminHatEligibilityModule();
-  let gameMasterHatEligibilityModule =
-    hatsAdaptor.gameMasterHatEligibilityModule();
+  let gameMasterHatEligibilityModule = hatsAdaptor.gameMasterHatEligibilityModule();
   let playerHatEligibilityModule = hatsAdaptor.playerHatEligibilityModule();
-  let characterHatEligibilityModule =
-    hatsAdaptor.characterHatEligibilityModule();
+  let characterHatEligibilityModule = hatsAdaptor.characterHatEligibilityModule();
 
   hatsData.adminHatEligibilityModule = adminHatEligibilityModule;
   hatsData.gameMasterHatEligibilityModule = gameMasterHatEligibilityModule;
@@ -167,7 +164,13 @@ function setupHatsData(
 }
 
 export function hatIdToHex(hatId: BigInt): string {
-  return "0x" + hatId.toHexString().slice(2).padStart(64, "0");
+  return (
+    "0x" +
+    hatId
+      .toHexString()
+      .slice(2)
+      .padStart(64, "0")
+  );
 }
 
 export function hatIdToPrettyIdHex(hatId: BigInt): string {
@@ -299,18 +302,12 @@ export function handleInitialized(event: InitializedEvent): void {
     dataSource.network().toString()
   );
 
-  implementations.characterSheetsImplementation =
-    implementationsStorage.characterSheetsImplementation();
-  implementations.experienceImplementation =
-    implementationsStorage.experienceImplementation();
-  implementations.itemsImplementation =
-    implementationsStorage.itemsImplementation();
-  implementations.itemsManagerImplementation =
-    implementationsStorage.itemsManagerImplementation();
-  implementations.classesImplementation =
-    implementationsStorage.classesImplementation();
-  implementations.hatsAdaptorImplementation =
-    implementationsStorage.hatsAdaptorImplementation();
+  implementations.characterSheetsImplementation = implementationsStorage.characterSheetsImplementation();
+  implementations.experienceImplementation = implementationsStorage.experienceImplementation();
+  implementations.itemsImplementation = implementationsStorage.itemsImplementation();
+  implementations.itemsManagerImplementation = implementationsStorage.itemsManagerImplementation();
+  implementations.classesImplementation = implementationsStorage.classesImplementation();
+  implementations.hatsAdaptorImplementation = implementationsStorage.hatsAdaptorImplementation();
 
   implementations.save();
 

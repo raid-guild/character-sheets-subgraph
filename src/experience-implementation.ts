@@ -21,6 +21,54 @@ function getGameAddress(experienceAddress: Address): Address {
 }
 
 export function handleTransfer(event: TransferEvent): void {
+  let game = getGameAddress(event.address);
+  let gameContract = CharacterSheetsImplementation.bind(game);
+
+  if (
+    event.params.to ==
+    Address.fromHexString("0x0000000000000000000000000000000000000000")
+  ) {
+    let characterIdResult = gameContract.try_getCharacterIdByAccountAddress(
+      event.params.from
+    );
+
+    if (characterIdResult.reverted) {
+      log.error("TransferSingle: getCharacterIdByAccountAddress reverted", []);
+      return;
+    }
+
+    let characterId = game
+      .toHex()
+      .concat("-character-")
+      .concat(characterIdResult.value.toHex());
+
+    let entity = Character.load(characterId);
+
+    if (entity == null) {
+      log.error("TransferSingle: character not found", []);
+      return;
+    }
+
+    let experience = entity.experience;
+    experience = experience.minus(event.params.value);
+    entity.experience = experience;
+
+    entity.save();
+
+    let gameEntity = Game.load(game.toHex());
+    if (gameEntity == null) {
+      log.error("TransferSingle: game not found", []);
+      return;
+    }
+
+    let totalExperience = gameEntity.experience;
+    totalExperience = totalExperience.minus(event.params.value);
+    gameEntity.experience = totalExperience;
+
+    gameEntity.save();
+    return;
+  }
+
   if (
     event.params.from !=
     Address.fromHexString("0x0000000000000000000000000000000000000000")
@@ -29,13 +77,11 @@ export function handleTransfer(event: TransferEvent): void {
     return;
   }
 
-  let game = getGameAddress(event.address);
+  let characterIdResult = gameContract.try_getCharacterIdByAccountAddress(
+    event.params.to
+  );
 
-  let gameContract = CharacterSheetsImplementation.bind(game);
-
-  let result = gameContract.try_getCharacterIdByAccountAddress(event.params.to);
-
-  if (result.reverted) {
+  if (characterIdResult.reverted) {
     log.error("TransferSingle: getCharacterIdByAccountAddress reverted", []);
     return;
   }
@@ -43,7 +89,7 @@ export function handleTransfer(event: TransferEvent): void {
   let characterId = game
     .toHex()
     .concat("-character-")
-    .concat(result.value.toHex());
+    .concat(characterIdResult.value.toHex());
 
   let entity = Character.load(characterId);
 

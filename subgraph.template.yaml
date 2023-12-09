@@ -231,6 +231,8 @@ templates:
           file: ./abis/CharacterSheetsImplementation.json
         - name: ClassesImplementation
           file: ./abis/ClassesImplementation.json
+        - name: ClassLevelAdaptor
+          file: ./abis/ClassLevelAdaptor.json
         - name: ItemsImplementation
           file: ./abis/ItemsImplementation.json
         - name: ExperienceImplementation

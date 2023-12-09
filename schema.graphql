@@ -177,6 +177,7 @@ type HeldClass @entity {
   character: Character!
   classEntity: Class!
   amount: BigInt!
+  xpForNextLevel: BigInt!
 }
 
 type EquippedItem @entity {
